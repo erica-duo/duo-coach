@@ -4,13 +4,13 @@
 
 set -e
 
-# Colors
-BOLD='\033[1m'
-DIM='\033[2m'
-GREEN='\033[32m'
-YELLOW='\033[33m'
-RED='\033[31m'
-RESET='\033[0m'
+# Colors (use $'...' so escape sequences are real characters, not literal text)
+BOLD=$'\033[1m'
+DIM=$'\033[2m'
+GREEN=$'\033[32m'
+YELLOW=$'\033[33m'
+RED=$'\033[31m'
+RESET=$'\033[0m'
 
 step() { echo -e "\n${BOLD}→ $1${RESET}"; }
 ok() { echo -e "${GREEN}✓${RESET} $1"; }
