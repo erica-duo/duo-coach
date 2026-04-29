@@ -1,3 +1,8 @@
+---
+name: onboard
+description: Two-phase Duo client setup. Walks through wiring up n8n credentials (Anthropic, Slack, Notion), then captures wireframe, voice print, tools, and automation wishlist into a client brief.
+---
+
 # /onboard — New Client Setup Interview
 
 Two-phase setup. First, walks the client through wiring up their n8n credentials (Anthropic, Slack, Notion). Then captures their wireframe, voice print, tools, and automation wishlist. Outputs a brief Duo reads before building.

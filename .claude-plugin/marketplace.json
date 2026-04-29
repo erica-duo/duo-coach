@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "duo-coach",
+  "description": "Duo's onboarding marketplace — installs the duo-coach plugin into a Duo client's Claude Code setup",
+  "owner": {
+    "name": "Duo",
+    "email": "erica@ericaschneider.me"
+  },
+  "plugins": [
+    {
+      "name": "duo-coach",
+      "description": "Onboarding interview + setup guide for Duo clients. Captures their wireframe, voice print, tools, and automation wishlist into a brief Duo reads before building.",
+      "category": "productivity",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/erica-duo/duo-coach.git",
+        "path": "plugins/duo-coach"
+      }
+    }
+  ]
+}
