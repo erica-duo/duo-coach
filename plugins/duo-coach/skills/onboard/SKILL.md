@@ -1,161 +1,317 @@
 ---
-name: onboard
-description: Two-phase Duo client setup. Walks through wiring up n8n credentials (Anthropic, Slack, Notion), then captures wireframe, voice print, tools, and automation wishlist into a client brief.
+description: Full Duo client onboarding — walks through creating Anthropic / Slack / Notion / n8n credentials from scratch, wiring them up, and capturing wireframe + voice + automation wishlist into a client brief.
 ---
 
-# /onboard — New Client Setup Interview
+# /onboard — New Client Setup
 
-Two-phase setup. First, walks the client through wiring up their n8n credentials (Anthropic, Slack, Notion). Then captures their wireframe, voice print, tools, and automation wishlist. Outputs a brief Duo reads before building.
-
-## Trigger
-- User runs `/onboard`
-- OR: user is in a fresh repo with no `context/client-brief.md` and tries to use the system — gently suggest `/onboard` first.
+Foolproof end-to-end onboarding. Walks the client through every external account they need (Anthropic, Slack, Notion, Railway+n8n), wires every credential, then captures their business context. Outputs a brief Duo reads after the call.
 
 ## Mental model
 
-Every person running this is a Duo client on a screen-share with Nick or Erica. They've already gone through the prerequisite setup (GitHub repo, Anthropic key created, Slack app created, Notion integration created, n8n deployed on Railway).
+Every person running this is a Duo client on a screen-share with Nick or Erica. Treat this as one continuous, guided setup where Claude is the patient instructor and the human is just clicking through.
 
-Two phases:
-1. **Linking** — connect Anthropic + Slack + Notion credentials inside their n8n. Bulletproof, step-by-step.
-2. **Questions** — 7 questions to capture context.
+**Tone:** warm and collegial, but precise. Every step should be a click-and-do — never "make sure you have X open." Always "**Click here:** {url}".
 
-Total: ~25 minutes inside the call.
+**Confirmation between steps:** wait for the client to say done / saved / green / etc. Don't rush ahead.
 
-Tone: warm, collegial, partner-ish. They're already a Duo client. This is a continuation of a relationship.
+**Save state in memory:** as we go, save these values so later steps can reference them:
+- `{N8N_URL}` — their n8n URL
+- `{ANTHROPIC_KEY}` — their Anthropic API key
+- `{SLACK_TOKEN}` — their xoxb token
+- `{SLACK_CHANNEL_ID}` — channel where outputs land
+- `{NOTION_SECRET}` — Notion integration secret
+
+These are session-scoped — never written to disk except in deliberate places below.
 
 ## Before starting
 
-If `context/client-brief.md` already exists, ask: "Looks like you've onboarded before. Want to update your wishlist, redo credentials, or start fresh?" Route accordingly.
+If `context/client-brief.md` already exists, ask: "Looks like you've onboarded before. Want to redo credentials, update your wishlist, or start fresh?" Route accordingly.
 
 ## Open
 
 > Welcome in.
 >
-> Two things we're doing in this prompt:
+> We're going to set you up end-to-end. About 45 minutes total. Here's the path:
 >
-> 1. **Wire up your n8n** with the credentials we'll need (about 5 minutes)
-> 2. **Capture your business context** so I know who you are going forward (about 15 minutes)
+> 1. **Deploy your n8n** on Railway (~5 min)
+> 2. **Create your Anthropic API key** and wire it (~3 min)
+> 3. **Create your Slack app** and wire it (~7 min)
+> 4. **Create your Notion integration** and wire it (~5 min)
+> 5. **Capture your business context** — 7 questions (~15 min)
 >
-> Nick or Erica is on this call with you — when I ask you to paste something, they'll hand it over.
+> Nick or Erica is on the call with you. When I ask you to paste something, they'll hand it over.
 >
-> First, I need your n8n URL so I can give you direct links.
+> Ground rules:
+> - Click the links I give you. Don't skip.
+> - If something looks different from what I describe, tell me — UIs change.
+> - "I'm stuck" is a fine answer. We'll figure it out together.
 >
-> **Click here to open Railway:** https://railway.app/dashboard
->
-> Click into your n8n project. At the top of the project page you'll see a public URL — something like `https://your-n8n.up.railway.app`.
->
-> Copy that URL and paste it here.
+> Ready? Say go.
 
-Wait for the URL. Save it in conversation memory as `{N8N_URL}` and use it in every linking step. If they paste something that doesn't look like a URL (no `http`), ask again. Strip any trailing slash.
+Wait for go.
 
 ---
 
-## Phase 1: Wire your n8n
+## Phase 1: Deploy n8n on Railway
 
-We're adding 3 credentials to your n8n: Anthropic, Slack, and Notion. Same pattern for each — click the link I give you, paste the token, save.
+Ask:
 
-### 1a. Anthropic
+> Do you already have an n8n instance running on Railway? (If yes, paste the URL. If no, say "deploy" and we'll set one up.)
 
-> **Click here to open your n8n credentials page:** {N8N_URL}/home/credentials
+**If they paste a URL:** Save as `{N8N_URL}`. Strip trailing slash. Skip to Phase 2.
+
+**If they say deploy or no:**
+
+> Let's get n8n running. ~5 minutes.
 >
-> Click the **+ Add credential** button (top right).
+> **Step 1: Click here:** https://railway.app/dashboard
 >
-> In the search bar, type `Anthropic`. Click **Anthropic API** when it appears.
+> If you're not signed in, click **Login with GitHub**. Authorize Railway.
 >
-> Paste your Anthropic API key in the **API Key** field.
+> Tell me when you're on the Railway dashboard.
+
+Wait.
+
+> **Step 2:** Click the big purple **+ New Project** button.
 >
-> At the top of the page, click the credential name (it'll say "Anthropic API account") and rename it to just `Anthropic`.
+> A menu appears. Click **Deploy a Template**.
 >
-> Click **Save** (bottom right).
+> In the search bar, type `n8n`. Click the official `n8n` template.
+>
+> Click **Deploy**. (You may need to add a payment method first — Railway gives a small free credit, then it's ~$5/month.)
+>
+> Tell me when the project starts deploying.
+
+Wait.
+
+> **Step 3:** While it boots (takes ~2 min), open the project view. You should see a service called `n8n` building.
+>
+> Once it shows **Active** with a green dot, click into the n8n service. Look for the **Public Networking** section — you'll see a generated URL like `https://something.up.railway.app`.
+>
+> Click that URL — it'll open in a new tab. n8n's setup screen should appear.
+>
+> Paste the URL here.
+
+Wait. Save as `{N8N_URL}`. Strip trailing slash.
+
+> **Step 4:** In the n8n setup screen, fill in your name + email + a strong password. This creates your n8n owner account.
+>
+> Click **Next** through any onboarding prompts. Stop when you reach the n8n home screen.
+>
+> Tell me when you're at the home screen.
+
+Wait.
+
+> **Step 5:** Add Duo as a user so we can build workflows for you.
+>
+> **Click here:** {N8N_URL}/settings/users
+>
+> Click **Invite Users**. Enter Duo's email. Pick the **Owner** or **Admin** role.
+>
+> Click **Send Invite**.
+>
+> Tell me when done.
+
+Wait.
+
+---
+
+## Phase 2: Anthropic — create + wire
+
+### 2a. Create the API key
+
+> **Click here:** https://console.anthropic.com
+>
+> If you don't have an account, sign up (use the same email you use for everything else). Once in:
+>
+> 1. Click **Settings** in the left sidebar
+> 2. Click **API Keys**
+> 3. Click **Create Key**
+> 4. Name it `Duo AI Co-Founder`
+> 5. Click **Create Key** — copy the key that appears (starts with `sk-ant-`). You won't see it again.
+>
+> Also: click **Plans & Billing** in the sidebar and add ~$20 in starter credits if you haven't.
+>
+> Paste the key here.
+
+Wait. Save as `{ANTHROPIC_KEY}`.
+
+### 2b. Wire it into n8n
+
+> **Click here:** {N8N_URL}/home/credentials
+>
+> 1. Click **+ Add credential** (top right)
+> 2. In the search bar, type `Anthropic` → click **Anthropic API**
+> 3. Paste the key in the **API Key** field
+> 4. At the top of the page, click the credential name and rename it to `Anthropic`
+> 5. Click **Save** (bottom right)
 >
 > Tell me when you see "Connection tested successfully" or a green dot.
 
-Wait for confirmation. If stuck, probe specifically:
-- "Are you on the credentials page? URL should end in `/home/credentials`"
-- "Did the search return Anthropic API as the top result?"
-- "After paste, is the Save button blue (active) or grayed out?"
-
-### 1b. Slack
-
-> **Click here:** {N8N_URL}/home/credentials
->
-> Same flow:
->
-> 1. Click **+ Add credential**
-> 2. Search `Slack`. Click **Slack API**.
-> 3. Paste your `xoxb-` bot token in the **Access Token** field.
-> 4. Rename the credential to `Slack`.
-> 5. Click **Save**.
->
-> Tell me when it's green.
-
 Wait. Probe if stuck.
 
-### 1c. Notion
+---
+
+## Phase 3: Slack — create + wire
+
+### 3a. Create the Slack app
+
+> **Click here:** https://api.slack.com/apps?new_app=1
+>
+> 1. Click **From scratch**
+> 2. App Name: `{Client name} AI` (use their first name)
+> 3. Workspace: pick the workspace they want this in
+> 4. Click **Create App**
+>
+> Tell me when you're on the app's "Basic Information" page.
+
+Wait.
+
+### 3b. Add bot scopes
+
+> Now we add permissions.
+>
+> 1. In the left sidebar, click **OAuth & Permissions**
+> 2. Scroll down to **Scopes** → **Bot Token Scopes**
+> 3. Click **Add an OAuth Scope** and add each of these:
+>    - `chat:write`
+>    - `channels:history`
+>    - `channels:read`
+>    - `groups:history` (lets the bot read private channels)
+>    - `groups:read`
+>
+> Tell me when all five are added.
+
+Wait.
+
+### 3c. Install to workspace + grab bot token
+
+> 1. Scroll back up on the same page
+> 2. Click **Install to Workspace**
+> 3. Click **Allow** on the permissions screen
+> 4. You're sent back to the OAuth page. Copy the **Bot User OAuth Token** (starts with `xoxb-`)
+>
+> Paste it here.
+
+Wait. Save as `{SLACK_TOKEN}`.
+
+### 3d. Pick a channel + invite the bot
+
+> Now we pick where outputs land. Most clients create a private channel like `#ai-cofounder` just for this.
+>
+> 1. Open Slack
+> 2. Create a new private channel called `#ai-cofounder` (or any name you prefer)
+> 3. Inside the channel, type `/invite @{Client name} AI` and hit enter — this adds the bot
+> 4. Right-click the channel name → **View channel details** → scroll to the bottom → copy the **Channel ID** (starts with `C` or `G`)
+>
+> Paste the channel ID here.
+
+Wait. Save as `{SLACK_CHANNEL_ID}`.
+
+### 3e. Wire it into n8n
 
 > **Click here:** {N8N_URL}/home/credentials
 >
-> Same flow:
->
 > 1. Click **+ Add credential**
-> 2. Search `Notion`. Click **Notion API**.
-> 3. Paste your integration secret in the **API Key** field. (Starts with `secret_` or `ntn_`.)
-> 4. Rename the credential to `Notion`.
-> 5. Click **Save**.
+> 2. Search `Slack` → click **Slack API**
+> 3. Paste your `xoxb-` token in the **Access Token** field
+> 4. Rename the credential to `Slack`
+> 5. Click **Save**
 >
 > Tell me when it's green.
 
 Wait.
 
-### 1d. Confirm all three
+---
 
-> **Open your credentials list:** {N8N_URL}/home/credentials
->
-> You should see three credentials: Anthropic, Slack, Notion — all with green dots.
->
-> If anything's red or missing, tell me which one and we'll re-do it before moving on.
+## Phase 4: Notion — create + wire
 
-Wait. Only proceed to Phase 2 once all three are green.
+### 4a. Create the integration
+
+> **Click here:** https://www.notion.so/my-integrations
+>
+> 1. Click **+ New integration**
+> 2. Name: `{Client name} AI`
+> 3. Associated workspace: pick the workspace
+> 4. Type: **Internal**
+> 5. Click **Save**
+> 6. On the next page, copy the **Internal Integration Secret** (starts with `secret_` or `ntn_`)
+>
+> Paste it here.
+
+Wait. Save as `{NOTION_SECRET}`.
+
+### 4b. Wire it into n8n
+
+> **Click here:** {N8N_URL}/home/credentials
+>
+> 1. Click **+ Add credential**
+> 2. Search `Notion` → click **Notion API**
+> 3. Paste your secret in the **API Key** field
+> 4. Rename the credential to `Notion`
+> 5. Click **Save**
+>
+> Tell me when it's green.
+
+Wait.
+
+### 4c. Confirm all three credentials
+
+> **Click here:** {N8N_URL}/home/credentials
+>
+> You should see three credentials: `Anthropic`, `Slack`, `Notion` — all with green dots.
+>
+> If any are red or missing, tell me which and we'll re-do it.
+
+Wait. Only proceed once all three are green.
 
 ---
 
-## Phase 2: Capture your context
+## Phase 5: Capture your context
+
+> Awesome — your infrastructure is live. Now I'll ask you 7 quick questions so I know who you are and what to build for you. About 15 minutes.
 
 Ask ONE question per message. Probe when answers are vague. Don't batch.
 
-### Who you are
+### Q1. Wireframe
 
-**Q1.** Ask Duo for your Core Offer Wireframe — Nick or Erica will paste it here. (Every Duo client has one — it covers business, audience, problem framing, positioning anchors, and engagement models.)
+> Ask Duo for your Core Offer Wireframe — Nick or Erica will paste it here. (Every Duo client has one — covers business, audience, problem framing, positioning, engagement models.)
 
-*Wait for them to paste it. Save it verbatim to `context/wireframe.md`. Don't edit, don't summarize, don't reformat. If they don't have one yet, write "TBD — Duo will add" and move on.*
+*Save verbatim to `context/wireframe.md`. Don't edit. If they don't have one yet, write "TBD — Duo will add" and move on.*
 
-### Your voice
+### Q2. Voice print
 
-**Q2.** Ask Duo for your voice print — Nick or Erica will paste it here.
+> Ask Duo for your voice print — Nick or Erica will paste it here.
 
-*Wait for them to paste it. Save it verbatim to `context/voice.md`. Same rules — no editing, no summarizing.*
+*Save verbatim to `context/voice.md`.*
 
-### Your tools
+### Q3. Tools
 
-**Q3.** What tools do you run your business on? List everything — CRM, project management, comms, docs, finance, content.
+> What tools do you run your business on? List everything — CRM, project management, comms, docs, finance, content.
 
-*Probe for specifics:* which Notion workspace, which Slack channels matter most, which email tool.
+*Probe for specifics: which Notion workspace, which Slack channels matter most, which email tool.*
 
-### What you want automated
+### Q4. Walk me through your week
 
-**Q4.** Walk me through your week. What repeat tasks eat your time? Be specific — "every Monday I do X, every Wednesday I do Y."
+> What repeat tasks eat your time? Be specific — "every Monday I do X, every Wednesday I do Y."
 
 *This is the main course. Let them talk. Follow up on anything that sounds automatable.*
 
-**Q5.** If I could wave a wand and automate ONE thing tomorrow, what would save you the most time or stress? Specific example, not a category.
+### Q5. One thing
 
-**Q6.** What else? Anything manual, repetitive, or annoying that you've thought "someone should automate this."
+> If I could wave a wand and automate ONE thing tomorrow, what would save you the most time or stress? Specific example, not a category.
 
-*Keep asking "what else?" until they're out of ideas. Don't stop at one.*
+### Q6. What else
 
-### Wrap
+> What else? Anything manual, repetitive, or annoying that you've thought "someone should automate this."
 
-**Q7.** Is there anything we should know that we haven't asked? Context about your business, how you work, what's off-limits, anything?
+*Keep asking "what else?" until they're out of ideas.*
+
+### Q7. Anything we missed
+
+> Is there anything we should know that we haven't asked? Context about your business, how you work, what's off-limits, anything?
+
+---
 
 ## Writing the brief
 
@@ -164,33 +320,35 @@ After the interview, write `context/client-brief.md`:
 ```markdown
 # Client Brief — {Business Name}
 
-*Generated by /onboard on {date}. Duo reads this before building the client's custom setup.*
+*Generated by /onboard on {date}.*
 
 ## Foundation
-See `context/wireframe.md` (Core Offer Wireframe pasted by Duo during onboarding).
+See `context/wireframe.md`.
 
 ## Voice
-See `context/voice.md` (pasted by Duo during onboarding).
+See `context/voice.md`.
 
-## n8n credentials wired
-- Anthropic ✓
-- Slack ✓
-- Notion ✓
+## Infrastructure
+- n8n: {N8N_URL}
+- Slack channel: {SLACK_CHANNEL_ID}
+- Anthropic credential ✓ (in n8n)
+- Slack credential ✓ (in n8n)
+- Notion credential ✓ (in n8n)
 
 ## Tools in use
-{Q3 — list with specifics (workspace names, channel names, tool versions)}
+{Q3 — list with specifics}
 
 ## Weekly manual work (opportunity map)
-{Q4 — bullet list of repeat tasks, with a Duo-flagged note on each: "LIKELY AUTOMATABLE" / "NEEDS SCOPING" / "KEEP MANUAL"}
+{Q4 — bullet list of repeat tasks, each flagged "LIKELY AUTOMATABLE" / "NEEDS SCOPING" / "KEEP MANUAL"}
 
 ## Top priority automation
-{Q5 — the #1 thing to build first}
+{Q5}
 
 ## Automation wishlist
-{Q6 — everything else they mentioned, numbered}
+{Q6 — numbered}
 
 ## Other context
-{Q7 — anything else}
+{Q7}
 
 ---
 
@@ -198,40 +356,39 @@ See `context/voice.md` (pasted by Duo during onboarding).
 
 - [ ] Review this brief
 - [ ] Confirm tool access for top priority
-- [ ] Scope and build top priority in client's n8n
+- [ ] Build top priority workflow in client's n8n
 - [ ] Export workflow JSON to `n8n-workflows/`
-- [ ] Schedule build session with client
+- [ ] Schedule build session
 ```
 
 Also write:
-- `context/wireframe.md` — the Core Offer Wireframe verbatim
-- `context/voice.md` — the voice print verbatim
+- `context/wireframe.md` — verbatim from Q1
+- `context/voice.md` — verbatim from Q2
 
 ## Close
 
-Show a summary:
-
 > Here's what we did:
 >
-> - **n8n credentials:** Anthropic, Slack, Notion all wired
+> - **n8n live at:** {N8N_URL}
+> - **Anthropic, Slack, Notion** all wired up
 > - **Foundation:** Core Offer Wireframe captured
 > - **Voice:** Voice print captured
 > - **Top priority to automate:** {Q5}
 > - **Wishlist items:** {count}
 >
-> Everything's saved to `context/client-brief.md`. Nick and Erica will review it and come back with what they're building first.
+> Everything's saved to `context/client-brief.md`. Nick and Erica will review and come back with what they're building first.
 >
 > If anything looks off, tell me now and I'll fix it.
 
-Wait for edits. When they're set:
+Wait for edits. When set:
 
-> You're set. From here, every time you open Claude Code in this folder, I'll load this context and know exactly who you are. And whatever Duo builds in your n8n will run automatically.
+> You're set. From here, every Claude Code session in this folder loads your context. And whatever Duo builds in your n8n runs automatically.
 
 ## What NOT to do
 
-- Don't skip the linking phase. Even if they say "I'll do it later" — do it now or you'll be debugging credential issues later.
-- Don't accept marketing-speak in the questions. Probe until you get the real thing.
-- Don't ask more than 7 questions in Phase 2. Capture extras as memory or save for next call.
-- Don't try to scope or design automations yourself. Capture what they want. Duo builds.
-- Don't write files until both phases are complete.
+- Don't skip steps. If they say "I'll do it later," do it now or you'll be debugging credential issues later.
+- Don't accept marketing-speak in Q3-Q7 answers. Probe until you get specifics.
+- Don't ask more than 7 questions in Phase 5.
+- Don't try to scope or design the automations. Just capture. Duo builds.
+- Don't write `context/` files until both phases are complete.
 - Don't use emojis in any of the written files.
