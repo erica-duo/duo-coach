@@ -1,174 +1,93 @@
-# Client Setup — 45-Minute Onboarding Call
+# Client Setup — One Command + /onboard
 
-The script Duo walks through with the client on the onboarding call. Goal: by the end, the client has a GitHub repo with Duo as a collaborator, their own n8n instance running on Railway, and Slack + Notion + Anthropic connected in n8n. After that, Duo builds whatever they need on top.
+The full Duo client onboarding is two steps:
 
-This call is about **infrastructure**, not building specific automations. Those come later, custom per client.
+1. Run the bootstrap script (sets up GitHub repo, plugin, Claude Code) — ~5 min
+2. Run `/onboard` (sets up n8n, all credentials, captures their wireframe + wishlist) — ~40 min
 
----
-
-## Order of operations
-
-1. GitHub repo from template + Duo as collaborator
-2. Install Claude Code
-3. Anthropic API key
-4. Slack bot token
-5. Notion integration
-6. Railway account + deploy n8n
-7. Wire credentials into n8n
-8. Run `/onboard`
-
-Total: ~45 min on the call.
+Total: ~45 min on a screen-share call.
 
 ---
 
-## 1. GitHub repo
+## Pre-call prep (sent to client 1-2 days out)
 
-**With the client screen-sharing:**
+Client needs:
+- GitHub account
+- Homebrew (https://brew.sh)
+- Claude Code (https://docs.claude.com/claude-code) — run `claude` once to auth
+- Anthropic account at console.anthropic.com with ~$20 in credits
+- Notion workspace they're an admin of
 
-1. Go to `https://github.com/erica-duo/duo-starter-template`
-2. Click **Use this template** → **Create a new repository**
-3. Name it something like `{their-name}-coach` (private)
-4. **Settings → Collaborators → Add people** — invite Duo's GitHub handle with **Write** permission. NOT Admin.
-5. Clone locally:
-   ```bash
-   git clone git@github.com:{client-handle}/{their-name}-coach.git
-   cd {their-name}-coach
-   ```
-
-Duo accepts the invite right away.
+That's it.
 
 ---
 
-## 2. Claude Code
+## Step 1 — One-command bootstrap
 
-Install: https://docs.claude.com/claude-code
+In their terminal:
 
-In their repo:
 ```bash
-claude plugin install erica-duo/duo-coach
+bash <(curl -sSL https://raw.githubusercontent.com/erica-duo/duo-coach/main/setup.sh)
 ```
 
----
+This script:
 
-## 3. Anthropic API key
+1. Verifies prereqs (git, brew)
+2. Installs `gh` CLI if missing
+3. Auths `gh` (browser flow)
+4. Asks for their first name → creates `{firstname}-coach` repo from `erica-duo/duo-starter-template`
+5. Adds Duo (`erica-duo`) as a Write collaborator
+6. Clones the repo to `~/Code/{firstname}-coach`
+7. Installs the duo-coach plugin
 
-1. https://console.anthropic.com → **API Keys** → Create
-2. Add ~$20 in starter credits
-
-Copy the key — they'll paste it into n8n in step 7.
-
----
-
-## 4. Slack bot token
-
-1. https://api.slack.com/apps → **Create New App** → **From scratch**
-2. Name: `{Client name} AI`
-3. **OAuth & Permissions** → Bot Token Scopes:
-   - `chat:write`
-   - `channels:history`
-   - `channels:read`
-4. Install to workspace, copy the Bot User OAuth Token (starts with `xoxb-`)
-5. Create a private channel for outputs (e.g. `#ai-cofounder`). Invite the bot: `/invite @{app-name}`. Copy the channel ID.
+If Claude Code isn't installed, the script tells them where to install it and exits cleanly. Re-run is idempotent.
 
 ---
 
-## 5. Notion integration
-
-1. https://www.notion.so/my-integrations → **New integration**
-2. Name: `{Client} AI`. Pick their workspace.
-3. Capabilities: read + update + insert content
-4. Copy the **Internal Integration Secret**
-
-We'll connect specific databases and pages later, depending on what they ask us to build.
-
----
-
-## 6. Railway + n8n
-
-This is where their automations will live. Each client gets their own n8n instance — they own it, they control it, we have access via login.
-
-1. https://railway.app → sign up with GitHub
-2. **New Project** → **Deploy from Template** → search "n8n"
-3. Pick the official n8n template. Click Deploy.
-4. Once it boots (~2 min), Railway gives them a URL like `https://your-n8n.up.railway.app`. Visit it.
-5. Create the n8n owner account (email + strong password). This is THEIR account — we get a separate user added later.
-6. **In n8n: Settings → Users → Invite** Duo's email. Role: Owner or Admin so we can build workflows.
-
-Cost: ~$5-10/month on Railway. They put their own credit card.
-
----
-
-## 7. Wire credentials into n8n
-
-Inside their n8n, **Credentials → New**:
-
-### Slack
-- Type: Slack API
-- Access Token: paste the `xoxb-` token from step 4
-- Save
-
-### Notion
-- Type: Notion API
-- API Key: paste the integration secret from step 5
-- Save
-
-### Anthropic
-- Type: Anthropic API
-- API Key: paste the key from step 3
-- Save
-
-Test each one (n8n has a "Test" button on the credential page) and confirm green checkmark.
-
----
-
-## 8. Run /onboard
+## Step 2 — Run /onboard
 
 ```bash
-cd {their-repo}
+cd ~/Code/{firstname}-coach
 claude
 ```
 
-Then in Claude:
+In Claude:
 ```
 /onboard
 ```
 
-7 questions, ~15 minutes:
-- Their Core Offer Wireframe (you paste it in when asked)
-- Their voice print (you paste it in when asked)
-- Their tools
-- Walk through their week
-- The #1 thing they want automated
-- What else
-- Anything we should know
+The plugin's `/onboard` skill walks them through:
 
-Output: a `client-brief.md` you read after the call to scope what to build first.
+| Phase | What | Time |
+|---|---|---|
+| 1 | Deploy n8n on Railway | ~5 min |
+| 2 | Create Anthropic key + wire into n8n | ~3 min |
+| 3 | Create Slack app + token + wire into n8n | ~7 min |
+| 4 | Create Notion integration + wire into n8n | ~5 min |
+| 5 | 7 questions (wireframe, voice, tools, week, wishlist) | ~15 min |
+
+Output: `context/wireframe.md`, `context/voice.md`, `context/client-brief.md`.
 
 ---
 
-## After the call
+## What Duo handles after the call
 
-The client has:
-- A GitHub repo with Duo as collaborator
-- Their own n8n on Railway with Slack, Notion, and Anthropic credentials wired up
-- Claude Code installed with the duo-coach plugin
-- A `client-brief.md` with their automation wishlist
-
-Duo's next step:
-1. Read their brief
-2. Pick the top priority automation
-3. Build it directly in their n8n (we have access)
-4. Export the workflow JSON to their `n8n-workflows/` folder in GitHub for backup + version control
-5. Iterate from there
-
-For ideas of what we typically build, see `IDEAS.md`.
+1. `git pull` the client's brief
+2. Pick top priority from their automation wishlist
+3. Build it in their n8n (you have Owner access)
+4. Export workflow JSON to their `n8n-workflows/` folder
+5. Commit + push to their repo
 
 ---
 
 ## Troubleshooting
 
-- **Claude Code can't find the plugin** — confirm they ran `claude plugin install erica-duo/duo-coach` from inside their repo
-- **Slack bot can't post** — bot must be invited to the channel, even private ones (`/invite @{app-name}`)
-- **Notion integration can't read pages** — connect the integration to each specific page or database (Page → ... → Connections)
-- **n8n credential test fails** — usually a copy/paste whitespace issue. Re-paste the token.
-- **Railway sleeps the n8n** — for active workflows, upgrade to Railway's "always on" tier ($5/mo)
+| Problem | Fix |
+|---|---|
+| `setup.sh` says "Homebrew not installed" | Install from brew.sh, re-run setup.sh |
+| `setup.sh` says "Claude Code not installed" | Install from docs.claude.com/claude-code, run `claude` once, re-run setup.sh |
+| Repo creation says "already exists" | Script handles this — keeps going. Safe to re-run |
+| Slack bot can't post | Bot must be `/invite @{app-name}`'d from inside the channel |
+| Notion integration can't read pages | Connect integration to each specific page or DB (Page → ... → Connections) |
+| n8n credential test fails | 99% of the time it's whitespace in the pasted token |
+| Railway sleeps the n8n | Upgrade to Railway "always on" tier (~$5/mo) |
