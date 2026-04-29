@@ -33,68 +33,87 @@ If `context/client-brief.md` already exists, ask: "Looks like you've onboarded b
 >
 > Two things we're doing in this prompt:
 >
-> 1. Wire up your n8n with the credentials we'll need (about 5 minutes)
-> 2. Capture your business context so I know who you are going forward (about 15 minutes)
+> 1. **Wire up your n8n** with the credentials we'll need (about 5 minutes)
+> 2. **Capture your business context** so I know who you are going forward (about 15 minutes)
 >
 > Nick or Erica is on this call with you — when I ask you to paste something, they'll hand it over.
 >
-> Have your n8n open in a browser tab? Once you're ready, say go.
+> First, I need your n8n URL so I can give you direct links.
+>
+> **Click here to open Railway:** https://railway.app/dashboard
+>
+> Click into your n8n project. At the top of the project page you'll see a public URL — something like `https://your-n8n.up.railway.app`.
+>
+> Copy that URL and paste it here.
 
-Wait for "go" or equivalent.
+Wait for the URL. Save it in conversation memory as `{N8N_URL}` and use it in every linking step. If they paste something that doesn't look like a URL (no `http`), ask again. Strip any trailing slash.
 
 ---
 
 ## Phase 1: Wire your n8n
 
-We're going to add 3 credentials to your n8n: Anthropic, Slack, and Notion. Same pattern for each — open the credentials page, create new, paste the token, name it, save.
+We're adding 3 credentials to your n8n: Anthropic, Slack, and Notion. Same pattern for each — click the link I give you, paste the token, save.
 
 ### 1a. Anthropic
 
-> Open your n8n. Go to **Credentials → Create Credential** (or "+" if you've never made one).
+> **Click here to open your n8n credentials page:** {N8N_URL}/home/credentials
 >
-> Search "Anthropic". Pick **Anthropic API**.
+> Click the **+ Add credential** button (top right).
 >
-> Paste your Anthropic API key into the **API Key** field.
+> In the search bar, type `Anthropic`. Click **Anthropic API** when it appears.
 >
-> Click **Save**. Name the credential `Anthropic` so it's findable.
+> Paste your Anthropic API key in the **API Key** field.
 >
-> Tell me when it's saved.
+> At the top of the page, click the credential name (it'll say "Anthropic API account") and rename it to just `Anthropic`.
+>
+> Click **Save** (bottom right).
+>
+> Tell me when you see "Connection tested successfully" or a green dot.
 
-Wait for confirmation. Probe if they're stuck: "Are you on the credentials page in n8n?" / "Did the save button turn green?"
+Wait for confirmation. If stuck, probe specifically:
+- "Are you on the credentials page? URL should end in `/home/credentials`"
+- "Did the search return Anthropic API as the top result?"
+- "After paste, is the Save button blue (active) or grayed out?"
 
 ### 1b. Slack
 
-> Now Slack. Same flow:
+> **Click here:** {N8N_URL}/home/credentials
 >
-> **Credentials → Create Credential** → search "Slack" → pick **Slack API**.
+> Same flow:
 >
-> Paste your `xoxb-` bot token in the **Access Token** field.
+> 1. Click **+ Add credential**
+> 2. Search `Slack`. Click **Slack API**.
+> 3. Paste your `xoxb-` bot token in the **Access Token** field.
+> 4. Rename the credential to `Slack`.
+> 5. Click **Save**.
 >
-> Save. Name it `Slack`.
->
-> Tell me when it's saved.
+> Tell me when it's green.
 
-Wait for confirmation.
+Wait. Probe if stuck.
 
 ### 1c. Notion
 
-> Last one — Notion.
+> **Click here:** {N8N_URL}/home/credentials
 >
-> **Credentials → Create Credential** → search "Notion" → pick **Notion API**.
+> Same flow:
 >
-> Paste your integration secret in the **API Key** field. (Starts with `secret_` or `ntn_`.)
+> 1. Click **+ Add credential**
+> 2. Search `Notion`. Click **Notion API**.
+> 3. Paste your integration secret in the **API Key** field. (Starts with `secret_` or `ntn_`.)
+> 4. Rename the credential to `Notion`.
+> 5. Click **Save**.
 >
-> Save. Name it `Notion`.
->
-> Tell me when it's saved.
+> Tell me when it's green.
 
-Wait for confirmation.
+Wait.
 
-### 1d. Confirm
+### 1d. Confirm all three
 
-> All three credentials wired. You should see them under Credentials in your n8n with green checkmarks.
+> **Open your credentials list:** {N8N_URL}/home/credentials
 >
-> If anything's red, tell me which one — we'll re-paste before moving on.
+> You should see three credentials: Anthropic, Slack, Notion — all with green dots.
+>
+> If anything's red or missing, tell me which one and we'll re-do it before moving on.
 
 Wait. Only proceed to Phase 2 once all three are green.
 
