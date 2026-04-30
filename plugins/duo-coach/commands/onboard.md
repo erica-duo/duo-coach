@@ -54,84 +54,43 @@ Wait for "go."
 
 ---
 
-## Phase 1: Deploy n8n on Railway
+## Phase 1: Set up n8n Cloud
 
-> First we'll get n8n running. n8n is the tool that runs all your automations behind the scenes. Each Duo client gets their own — you'll own it.
+> First we'll get n8n running. n8n is the tool that runs all your automations behind the scenes. We're using n8n's managed cloud version — no servers to set up, just sign up and go.
 >
-> Do you already have an n8n instance running? (If yes, paste the URL. If no, type "deploy" and I'll walk you through it.)
+> Do you already have an n8n Cloud account? (If yes, paste the URL. If no, type "signup" and I'll walk you through it.)
 
-**If they paste a URL:** Save as `{N8N_URL}`. Strip trailing slash. Skip to Phase 2.
+**If they paste a URL:** Save as `{N8N_URL}`. Strip trailing slash. Skip to 1.3 to add Duo as a user.
 
-**If they say deploy / no:**
+**If they say signup / no:**
 
-> Cool, let's set one up. About 5 minutes.
+> Cool, let's get you signed up. About 3 minutes.
 
-### 1.1 Open Railway
+### 1.1 Sign up for n8n Cloud
 
-> **Click here to open Railway:** https://railway.app/dashboard
+> **Click here:** https://app.n8n.cloud/register
 >
-> If you're not signed in:
-> - Click the **Login** button (top right)
-> - Click **Login with GitHub**
-> - Authorize Railway in the popup
+> 1. Sign up with your email, or click **Sign up with Google** if that's easier
+> 2. Verify your email if it asks
+> 3. n8n will prompt you to pick a workspace name — use your business name or your first name (lowercase, no spaces). Example: `zoehart`
+> 4. Pick the **Starter** plan (or start with a 14-day free trial). After the trial, it's $20/month.
+> 5. Add a payment method when prompted
 >
-> Tell me when you're on the Railway dashboard (the page with "Projects" at the top).
+> Tell me when you're on the n8n home screen (you'll see "Workflows" and other items in the left sidebar).
 
 Wait.
 
-### 1.2 Create the project
+### 1.2 Get your n8n URL
 
-> On the dashboard:
+> Look at your browser address bar. Your n8n URL will be something like `https://yourname.app.n8n.cloud`.
 >
-> 1. Click the big purple **+ New Project** button
-> 2. A menu appears. Click **Deploy a Template**
-> 3. In the search bar, type `n8n`
-> 4. Click the result that just says `n8n` (the official one)
-> 5. Click the purple **Deploy** button on the next page
+> Copy the part up through `.cloud` (no trailing slash, no path after it).
 >
-> Note: Railway will ask you to add a payment method if you haven't yet. They give you a small free credit, then it's about $5/month. Add a card to continue.
->
-> Tell me when you see the project starting to build (you'll see a service called "n8n" with a yellow or blue indicator).
-
-Wait.
-
-### 1.3 Wait for it to boot + grab the URL
-
-> n8n takes ~2 minutes to fully start. While it does:
->
-> 1. Watch the n8n service indicator. When it turns green and says **Active**, it's ready
-> 2. Click into the n8n service (just click the box that says "n8n")
-> 3. On the right side, look for **Settings** in the tabs at the top
-> 4. Click **Networking** in the Settings sidebar
-> 5. You'll see a **Public Networking** section with a URL like `https://something-production.up.railway.app`
-> 6. If there's no URL there yet, click **Generate Domain**
-> 7. Copy the URL
->
-> Paste the URL here.
+> Paste it here.
 
 Wait. Save as `{N8N_URL}`. Strip trailing slash.
 
-### 1.4 Set up your n8n owner account
-
-> Now open your n8n in a new tab.
->
-> **Click here:** {N8N_URL}
->
-> The first thing you see should be n8n's setup screen — it asks for your name, email, and password. Fill those in:
->
-> - First name + last name
-> - Email — use the one you'd want for n8n notifications
-> - A strong password (save it in your password manager)
->
-> Click **Next** through any onboarding prompts.
->
-> Stop when you reach the n8n home screen (it'll have "Workflows" and other items in the left sidebar).
->
-> Tell me when you're on the home screen.
-
-Wait.
-
-### 1.5 Add Duo as a user
+### 1.3 Add Duo as a user
 
 > So Duo can build workflows for you, we need to add them as a user on your n8n.
 >
