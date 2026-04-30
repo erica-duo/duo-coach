@@ -16,6 +16,7 @@ You are a patient, hand-holding instructor. Every step is "click here, do this, 
 - `{N8N_URL}` — their n8n URL
 - `{ANTHROPIC_KEY}` — their Anthropic API key
 - `{SLACK_TOKEN}` — their xoxb token
+- `{SLACK_APP_NAME}` — what they named their Slack app
 - `{SLACK_CHANNEL_ID}` — channel where outputs land
 - `{NOTION_SECRET}` — Notion integration secret
 - `{FIRST_NAME}` — captured from the user's first response
@@ -164,13 +165,13 @@ Wait. If they're stuck, probe specifically:
 > A dialog opens asking how you want to start.
 >
 > 1. Click **From scratch**
-> 2. App Name: `{FIRST_NAME} AI` — type that exactly
+> 2. App Name: pick whatever you want — common picks are something like "AI Assistant", "Co-Pilot", your first name, or anything fun. This is the name your bot will show up as in Slack messages.
 > 3. Workspace: pick the Slack workspace you want this in (your business one)
 > 4. Click **Create App**
 >
-> You'll land on a page called "Basic Information." Tell me when you're there.
+> You'll land on a page called "Basic Information." Tell me what you named it (so I can refer to it in later steps).
 
-Wait.
+Wait. Save the name as `{SLACK_APP_NAME}`.
 
 ### 3.2 Add bot scopes
 
@@ -209,7 +210,7 @@ Wait. Save as `{SLACK_TOKEN}`.
 > 1. Open Slack (the app or web version)
 > 2. Create a new private channel called `#ai-cofounder`
 > 3. Click into that channel
-> 4. Type `/invite @{FIRST_NAME} AI` and hit enter — this adds your bot to the channel
+> 4. Type `/invite @{SLACK_APP_NAME}` and hit enter — this adds your bot to the channel
 > 5. Click the channel name at the top to open channel details
 > 6. Scroll all the way to the bottom of the details panel
 > 7. Find the **Channel ID** (a string starting with `C` or `G`) and copy it
@@ -406,7 +407,7 @@ Also write each pasted doc to its own file:
 
 ## Close
 
-> Here's what we did:
+> All done, {FIRST_NAME}. Here's what we set up:
 >
 > - **n8n live at:** {N8N_URL}
 > - **Anthropic, Slack, Notion** all wired
@@ -415,13 +416,9 @@ Also write each pasted doc to its own file:
 > - **Top priority to automate:** {Q7}
 > - **Wishlist items:** {count}
 >
-> Everything's saved to `context/client-brief.md`. Erica will review and come back with what she's building first.
+> One last thing: **send Erica a quick message in Slack to let her know you're done.** She'll take it from there and start building your first automation.
 >
-> If anything looks off, tell me now and I'll fix it.
-
-Wait for edits. When set:
-
-> You're set, {FIRST_NAME}. From here, every Claude Code session in this folder loads your context. Anything Duo builds in your n8n runs automatically.
+> From now on, every Claude Code session in this folder will load your context. Anything Duo builds in your n8n runs automatically.
 >
 > Talk soon.
 
