@@ -25,10 +25,15 @@ cat <<'EOF'
   │                                          │
   │     Duo AI Co-Founder Setup              │
   │                                          │
-  │     This script gets your GitHub repo,   │
-  │     Claude Code, and plugin wired up.    │
-  │     Then we'll move to /onboard for the  │
+  │     This script installs everything you  │
+  │     need (Homebrew, Node, GitHub CLI,    │
+  │     Claude Code) and creates your repo.  │
+  │     Then we move to /onboard for the     │
   │     rest of the setup.                   │
+  │                                          │
+  │     Total time: ~10 minutes.             │
+  │     You'll be asked for your Mac         │
+  │     password once or twice.              │
   │                                          │
   └──────────────────────────────────────────┘
 
@@ -46,15 +51,45 @@ if ! command -v git &>/dev/null; then
 fi
 ok "git found"
 
-if ! command -v brew &>/dev/null; then
-  warn "Homebrew not installed. We'll need it to install gh CLI."
-  echo "  Install from https://brew.sh — it'll prompt for your password."
-  echo "  Once installed, re-run this script."
-  exit 1
-fi
-ok "homebrew found"
+# ── 2. Homebrew ─────────────────────────────────────────────────────
+step "Checking Homebrew"
 
-# ── 2. gh CLI ───────────────────────────────────────────────────────
+if ! command -v brew &>/dev/null; then
+  warn "Homebrew not installed. Installing now (you'll be prompted for your Mac password)..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  # Add brew to PATH for this session AND persist for future sessions.
+  # Apple Silicon brew lives at /opt/homebrew, Intel at /usr/local.
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    BREW_SHELLENV='eval "$(/opt/homebrew/bin/brew shellenv)"'
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    BREW_SHELLENV='eval "$(/usr/local/bin/brew shellenv)"'
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+
+  # Persist to .zprofile so future terminal sessions find brew automatically
+  if [[ -n "$BREW_SHELLENV" ]] && ! grep -qF "$BREW_SHELLENV" "$HOME/.zprofile" 2>/dev/null; then
+    echo "$BREW_SHELLENV" >> "$HOME/.zprofile"
+  fi
+
+  ok "Homebrew installed"
+else
+  ok "homebrew found"
+fi
+
+# ── 3. Node ─────────────────────────────────────────────────────────
+step "Checking Node.js (required for Claude Code)"
+
+if ! command -v node &>/dev/null; then
+  warn "Node not installed. Installing via Homebrew..."
+  brew install node
+  ok "Node installed"
+else
+  ok "node found ($(node --version))"
+fi
+
+# ── 4. gh CLI ───────────────────────────────────────────────────────
 step "Checking GitHub CLI"
 
 if ! command -v gh &>/dev/null; then
@@ -74,7 +109,21 @@ ok "GitHub authenticated as $(gh api user --jq .login)"
 
 GH_USER=$(gh api user --jq '.login')
 
-# ── 3. Pick repo name ───────────────────────────────────────────────
+# ── 5. Claude Code ──────────────────────────────────────────────────
+step "Checking Claude Code"
+
+if ! command -v claude &>/dev/null; then
+  warn "Claude Code not installed. Installing via npm..."
+  npm install -g @anthropic-ai/claude-code
+  ok "Claude Code installed"
+  echo
+  echo "  ${BOLD}You'll need to run \`claude\` once after this script finishes${RESET}"
+  echo "  ${BOLD}to authenticate (browser flow). We'll remind you at the end.${RESET}"
+else
+  ok "claude found"
+fi
+
+# ── 6. Pick repo name ───────────────────────────────────────────────
 step "Naming your repo"
 
 echo
@@ -94,7 +143,7 @@ if [[ "$CONFIRM" != "y" ]]; then
   read -rp "Type the repo name you want: " REPO_NAME
 fi
 
-# ── 4. Create repo from template ────────────────────────────────────
+# ── 7. Create repo from template ────────────────────────────────────
 step "Creating your repo from the Duo starter template"
 
 if gh repo view "${GH_USER}/${REPO_NAME}" &>/dev/null; then
@@ -109,14 +158,14 @@ else
   sleep 3
 fi
 
-# ── 5. Add Duo as collaborator ──────────────────────────────────────
+# ── 8. Add Duo as collaborator ──────────────────────────────────────
 step "Adding Duo as a collaborator (Write access, not Admin)"
 
 gh api -X PUT "/repos/${GH_USER}/${REPO_NAME}/collaborators/erica-duo" \
   -f permission=push >/dev/null 2>&1 || true
 ok "Invite sent to erica-duo"
 
-# ── 6. Clone repo ───────────────────────────────────────────────────
+# ── 9. Clone repo ───────────────────────────────────────────────────
 step "Cloning the repo to your machine"
 
 CODE_DIR="$HOME/Code"
@@ -131,21 +180,7 @@ fi
 cd "${REPO_NAME}"
 ok "Cloned to ${CODE_DIR}/${REPO_NAME}"
 
-# ── 7. Claude Code ──────────────────────────────────────────────────
-step "Checking Claude Code"
-
-if ! command -v claude &>/dev/null; then
-  warn "Claude Code not installed."
-  echo
-  echo "  Install it from: ${BOLD}https://docs.claude.com/claude-code${RESET}"
-  echo
-  echo "  Once installed, run claude once to authenticate, then re-run this script."
-  echo "  We'll pick up where we left off."
-  exit 0
-fi
-ok "Claude Code found"
-
-# ── 8. Install the duo-coach plugin ─────────────────────────────────
+# ── 10. Install the duo-coach plugin ────────────────────────────────
 step "Installing the duo-coach plugin"
 
 # These commands are safe to run repeatedly
@@ -153,7 +188,7 @@ claude plugin marketplace add erica-duo/duo-coach 2>/dev/null || true
 claude plugin install duo-coach@duo-coach 2>/dev/null || true
 ok "Plugin installed"
 
-# ── 9. Done ─────────────────────────────────────────────────────────
+# ── 11. Done ────────────────────────────────────────────────────────
 cat <<EOF
 
 ${GREEN}${BOLD}━━━ All set ━━━${RESET}
@@ -169,11 +204,18 @@ Next:
   2. Start Claude Code:
      ${BOLD}claude${RESET}
 
+     (First time only: it'll open a browser to authenticate. Click through it.)
+
   3. Run the onboarding flow:
      ${BOLD}/onboard${RESET}
 
 /onboard will walk you through the rest — n8n setup, all the credentials,
-pasting in the docs Erica sent you, and a few questions about your business.
+your meeting tool (Fathom/Granola/etc.), pasting in the docs Erica sent you,
+and a few questions about your business.
+
+${BOLD}Heads up:${RESET} when /onboard asks for an API key, send it to Erica in Slack.
+${BOLD}Do NOT paste keys into the terminal${RESET} — Claude Code will refuse them and
+you'll have to regenerate.
 
 If you get stuck, ping Erica or Nick in Slack.
 
