@@ -172,7 +172,9 @@ Next:
   3. Run the onboarding flow:
      ${BOLD}/onboard${RESET}
 
-Nick or Erica should be on a screen-share with you for the rest. They've got
-your Core Offer Wireframe and voice print ready to paste in.
+/onboard will walk you through the rest — n8n setup, all the credentials,
+pasting in the docs Erica sent you, and a few questions about your business.
+
+If you get stuck, ping Erica or Nick in Slack.
 
 EOF
