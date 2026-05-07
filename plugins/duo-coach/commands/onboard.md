@@ -1,10 +1,10 @@
 ---
-description: Full Duo client onboarding — walks through creating Anthropic / n8n / Slack / Notion (or Sheets) / meeting-tool credentials from scratch, captures every API key for Erica via Slack, then collects business context into a client brief.
+description: Full Duo client onboarding — Cursor + GitHub setup, credentials (Anthropic / n8n / Slack / Notion or Sheets / meeting tool), brain scaffold, and orientation. No business interview — context docs are pushed by Erica after the call.
 ---
 
 # /onboard — New Client Setup
 
-Foolproof end-to-end onboarding. Walks the client through every external account they need, captures every credential to Slack (so Erica can wire them up), then captures their business context. Outputs a brief Duo reads after the call.
+Foolproof end-to-end onboarding. Gets the client set up in Cursor and GitHub, walks through every credential, builds their brain, and orients them on how to use it. Outputs a brief Duo reads after the call.
 
 ## Mental model
 
@@ -17,6 +17,9 @@ You are a patient, hand-holding instructor. Every step is "click here, do this, 
 > Send this to Erica in Slack. Do NOT paste it here in the terminal. If you paste a key into Claude Code, it'll refuse it and you'll have to delete and regenerate. Just say "sent" when it's in Slack.
 
 **Save state in memory** as the conversation progresses:
+- `{FIRST_NAME}` — captured from the user's first response
+- `{GITHUB_USERNAME}` — their GitHub username
+- `{BRAIN_REPO}` — their brain repo name (default: `{firstname}-brain`)
 - `{N8N_URL}` — their n8n URL
 - `{ANTHROPIC_KEY_SENT}` — confirmed sent to Erica (boolean)
 - `{N8N_API_KEY_SENT}` — confirmed sent to Erica
@@ -29,26 +32,27 @@ You are a patient, hand-holding instructor. Every step is "click here, do this, 
 - `{SHEETS_URL}` — Google Sheet URL (if sheets)
 - `{MEETING_TOOL}` — `fathom`, `granola`, or other
 - `{MEETING_API_KEY_SENT}` — confirmed sent to Erica
-- `{FIRST_NAME}` — captured from the user's first response
 
 These never get written to disk except where explicitly noted.
 
 ## Before starting
 
-If `context/client-brief.md` already exists, ask: "Looks like you've onboarded before. Want to redo credentials, update your wishlist, or start fresh?" Route accordingly.
+If `context/client-brief.md` already exists, ask: "Looks like you've onboarded before. Want to redo credentials, update your setup, or start fresh?" Route accordingly.
 
 ## Open
 
 > Welcome in.
 >
-> I'm your AI co-founder, set up by Duo. Over the next 45-60 minutes I'll walk you through everything we need to get you running:
+> I'm your AI co-founder, set up by Duo. Over the next 30-40 minutes I'll walk you through everything we need to get you running:
 >
-> 1. **Set up n8n Cloud (paid Starter plan)** — where your automations will live (~5 min)
-> 2. **Create your Anthropic API key** (~3 min)
-> 3. **Create your Slack app + bot token + signing secret** (~10 min)
-> 4. **Pick your database — Notion or Google Sheets** (~5 min)
-> 5. **Wire up your meeting tool — Fathom, Granola, or other** (~5 min)
-> 6. **Capture your business context** — paste in the docs Erica sent you, plus a few questions (~15 min)
+> 1. **Cursor + GitHub** — your visual workspace and where your brain lives (~5 min)
+> 2. **Set up n8n Cloud** — where your automations run (~5 min)
+> 3. **Create your Anthropic API key** (~3 min)
+> 4. **Create your Slack app** (~10 min)
+> 5. **Pick your database — Notion or Google Sheets** (~5 min)
+> 6. **Wire up your meeting tool** (~5 min)
+> 7. **Build your brain** — scaffold your personal AI workspace (~5 min)
+> 8. **Get oriented** — how to actually use this thing (~5 min)
 >
 > A few ground rules:
 > - Click every link I give you. Don't skip ahead.
@@ -61,15 +65,61 @@ If `context/client-brief.md` already exists, ask: "Looks like you've onboarded b
 
 Wait. Save as `{FIRST_NAME}`. Capitalize the first letter for display purposes.
 
-> Got it, {FIRST_NAME}. Ready when you are — say "go" and we'll start with n8n.
+> Got it, {FIRST_NAME}. Ready when you are — say "go" and we'll start.
 
 Wait for "go."
 
 ---
 
+## Phase 0: Cursor + GitHub
+
+> Before we touch any credentials, let's get your visual workspace set up. Two things: Cursor (a code editor that makes your brain easy to see and navigate) and GitHub (where your brain lives in the cloud — think of it like Google Drive for code files).
+>
+> Both are free. Let's do GitHub first.
+
+### 0.1 GitHub account
+
+> **Click here:** https://github.com/signup
+>
+> Do you already have a GitHub account? If yes, tell me your username and we'll move on. If not, sign up now — it takes about 2 minutes.
+
+Wait. If they have one, save username as `{GITHUB_USERNAME}` and move on. If signing up, walk them through it, then save username.
+
+> Got it. GitHub username: `{GITHUB_USERNAME}`.
+>
+> Think of GitHub as your Google Drive for your brain. Everything you build — your skills, your context, your automations — lives here. Erica has access and can push things directly to it, so you'll always be in sync.
+
+### 0.2 Download Cursor
+
+> Now Cursor. It's a code editor — basically a window into your brain that makes it easy to see all your files, edit them, and run Claude Code without staring at a plain terminal.
+>
+> **Click here:** https://cursor.com
+>
+> Click **Download** and install it. Free plan is all you need — no subscription required.
+>
+> Tell me when it's installed and open.
+
+Wait.
+
+### 0.3 Connect Cursor to GitHub
+
+> In Cursor:
+>
+> 1. Open the **Source Control** panel (the branching icon in the left sidebar, or `Cmd+Shift+G`)
+> 2. Click **Sign in to GitHub** if prompted, or go to **Cursor → Settings → Extensions → GitHub** and sign in
+> 3. Authorize Cursor when the browser pops up
+>
+> Tell me when GitHub is connected.
+
+Wait.
+
+> Perfect. You're set up. Cursor is your window into your brain — you'll be opening it a lot.
+
+---
+
 ## Phase 1: Set up n8n Cloud
 
-> First, n8n. n8n is the tool that runs all your automations behind the scenes.
+> Now let's get the automation infrastructure sorted. n8n is the tool that runs all your automations behind the scenes.
 >
 > ⚠️ **Important:** you need the **Starter plan ($20/month)**, not just the trial. The API key feature we need is hidden until you're on a paid plan. The 14-day free trial does NOT give you API access.
 >
@@ -382,96 +432,304 @@ Wait. Capture answer. Save `{MEETING_API_KEY_SENT}` if applicable, otherwise not
 
 Wait. Once confirmed:
 
-> Beautiful. Infrastructure's done. Erica will wire it all up after the call. Now I'll capture who you are.
+> Beautiful. Infrastructure's done. Now let's build your brain.
 
 ---
 
-## Phase 7: Capture your context
+## Phase 7: Build your brain
 
-Ask ONE question per message. Probe when answers are vague. **If you're tight on time and the client hasn't paused, offer to skip this section and have Erica capture context async via Slack.**
-
-> Quick check: we have ~15 min of context capture left. Want to do it now, or have Erica grab it from you in Slack later? (Either works — pasting docs is faster live, but you can also just paste the doc URLs and I'll capture them async.)
-
-If they want to skip: jump to "Close" and note that context capture is pending.
-
-If they continue:
-
-### Q1. Core Offer Wireframe
-
-> Erica sent you your **Core Offer Wireframe** — it's the doc that covers your business, audience, and engagement model.
+> Your "brain" is a GitHub repository that lives on your computer and in GitHub. It's where your skills, context files, and automations live. Think of it like Google Drive, but Claude Code can read and write to it directly — so your AI always knows exactly what's in it.
 >
-> Find it in your email or Slack from her. Open it, copy the entire contents, and paste it here.
+> We're going to create it now. Takes about 5 minutes.
 
-*Wait. Save verbatim to `context/wireframe.md`. Don't edit, don't summarize, don't reformat. If they don't have it, write "TBD — Erica will add" and move on.*
+### 7.1 Create the GitHub repo
 
-### Q2. Problem Framing
-
-> Erica also sent you your **Problem Framing** doc — this is how we describe the underlying problem your business solves.
+> **Click here:** https://github.com/new
 >
-> Find it, copy the entire contents, and paste it here.
-
-*Save verbatim to `context/problem-framing.md`. Same rules.*
-
-### Q3. Positioning Anchors
-
-> Now your **Positioning Anchors** doc — the strategic anchors for how you position yourself in the market.
+> 1. Repository name: `{FIRST_NAME}-brain` (example: `jon-brain`) — or tell me a different name you prefer
+> 2. Description: `My AI co-founder brain`
+> 3. Set it to **Private**
+> 4. Check **Add a README file**
+> 5. Click **Create repository**
 >
-> Copy and paste it here.
+> Tell me when it's created and paste the repo URL (it'll look like `https://github.com/{GITHUB_USERNAME}/{FIRST_NAME}-brain`).
 
-*Save verbatim to `context/positioning-anchors.md`.*
+Wait. Save repo URL as `{BRAIN_REPO}`.
 
-### Q4. Voice Print
+### 7.2 Clone it locally
 
-> Last paste — your **Voice Print**. This is the doc that captures exactly how you sound in writing.
+> Before we pull it down, let's make sure git is authenticated with GitHub — otherwise the clone will fail.
 >
-> Copy and paste it here.
+> Run this:
+>
+> ```
+> gh auth status
+> ```
+>
+> If it says "Logged in to github.com" — great, skip ahead.
+> If it says "not logged in" — run `gh auth login`, choose **GitHub.com → HTTPS → Login with a web browser**, and follow the prompts.
+>
+> Tell me once `gh auth status` shows you're logged in.
 
-*Save verbatim to `context/voice.md`.*
+Wait. Once confirmed:
 
-### Q5. Tools
+> Now let's pull your repo down.
+>
+> Run:
+>
+> ```
+> mkdir -p ~/Code && gh repo clone {GITHUB_USERNAME}/{FIRST_NAME}-brain ~/Code/{FIRST_NAME}-brain
+> ```
+>
+> Tell me when it's done.
 
-> Now a few quick questions. First: what tools do you run your business on? List everything — CRM, project management, comms, docs, finance, content. The more specific the better.
+Wait.
 
-*Probe for specifics: which Notion workspace, which Slack channels matter most, which email tool.*
+### 7.3 Initialize your brain structure
 
-### Q6. Walk me through your week
+> Before I build this out, let me show you what you're about to get.
+>
+> A brain has six parts:
+>
+> - **CLAUDE.md** — the instructions file. Every time you open your brain, Claude reads this first. It's the operating manual — who you are, how you work, what Claude should and shouldn't do.
+> - **context/** — your business knowledge. Everything you paste in here Claude reads automatically every session.
+> - **skills/** — your slash commands. Each file in here is a workflow you trigger by typing `/skill-name`. Things like "prep me for this call" or "write my weekly recap."
+> - **memory/** — persistent notes across sessions. Claude writes here automatically so the next session picks up where you left off.
+> - **.claude/hooks** — background triggers. Run automatically when certain events happen. You won't touch these much — they're the self-updating glue.
+> - **.github/workflows/** — automation workflows. One of these pings Duo in Slack any time you push something, so we always know what you're building and can stay in sync.
+>
+> Everything lives in GitHub, which means Erica can see it, push to it, and stay in sync with you at all times.
+>
+> Ready? I'll build it now.
 
-> What repeat tasks eat your time during a typical week? Be specific — "every Monday I do X, every Wednesday I do Y, every Friday I review Z."
+Run each step below, narrating out loud as you go:
 
-*This is the main course. Let them talk. Follow up on anything that sounds automatable.*
+**Step 1 — folder structure:**
 
-### Q7. One thing
+Say: `> Creating your folders — context, skills, memory, and hooks...`
 
-> If I could wave a wand and automate ONE thing for you tomorrow — the thing that would save you the most time or stress — what would it be? Specific example, not a category.
+```bash
+cd ~/Code/{FIRST_NAME}-brain && mkdir -p context skills memory .claude/hooks
+```
 
-### Q8. What else
+Say: `> Done.`
 
-> What else? Anything manual, repetitive, or annoying that you've thought "someone should automate this."
+**Step 2 — CLAUDE.md:**
 
-*Keep asking "what else?" until they're out of ideas.*
+Say: `> Writing your CLAUDE.md — this is the file that tells me who you are every time you open your brain...`
 
-### Q9. Anything we missed
+Write `CLAUDE.md` to `~/Code/{FIRST_NAME}-brain/CLAUDE.md`:
 
-> Anything we should know that I haven't asked? Context about your business, how you work, what's off-limits, anything.
+```markdown
+# {FIRST_NAME}'s Brain
+
+Your AI co-founder, set up by Duo.
+
+## How to open your brain
+
+```
+cd ~/Code/{FIRST_NAME}-brain && claude
+```
+
+## What's in here
+
+- **CLAUDE.md** (this file) — operating instructions. Claude reads this first, every session.
+- **context/** — your business docs. Positioning, offers, voice, client briefs. Erica pushes these.
+- **skills/** — your slash commands. Each file = one workflow you can trigger with `/skill-name`.
+- **memory/** — persistent notes across sessions. Claude writes here automatically.
+- **.claude/hooks** — background automation triggers. Runs quietly when certain events happen.
+
+## How to build a new skill
+
+Tell Claude: "build me a skill that does X." It'll write the skill file to `skills/` and you can run it immediately.
+
+## How to save your session
+
+Type `/handoff` before closing. Next time you open your brain, type `/handoff` again to reload where you left off.
+
+## Getting help
+
+- Ask "what can I build?" for ideas based on your current context
+- Ping Erica or Nick in Slack anytime
+```
+
+Say: `> Done.`
+
+**Step 3 — push notification workflow:**
+
+Say: `> Setting up the Slack notification — this pings Duo any time you push something...`
+
+Create `.github/workflows/push-notify.yml` in the repo:
+
+```yaml
+name: Push Notification
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          COMMIT_MSG_FULL: ${{ github.event.head_commit.message }}
+          AUTHOR: ${{ github.event.head_commit.author.name }}
+          COMMIT_SHA: ${{ github.event.head_commit.id }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          COMMIT_MSG=$(printf '%s' "$COMMIT_MSG_FULL" | head -1)
+          SHORT_SHA="${COMMIT_SHA:0:7}"
+          TEXT="Push to ${REPO} by ${AUTHOR} — \`${SHORT_SHA}\` ${COMMIT_MSG}"
+
+          PAYLOAD=$(jq -n \
+            --arg channel "$SLACK_CHANNEL_ID" \
+            --arg text "$TEXT" \
+            '{channel: $channel, text: $text}')
+
+          curl -s -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"
+```
+
+Say: `> Done.`
+
+**Step 4 — push to GitHub:**
+
+Say: `> Pushing everything to GitHub...`
+
+```bash
+git add . && git commit -m "init: brain scaffold" && git push
+```
+
+Say: `> Done. Your brain is live.`
+
+> Now open Cursor, go to **File → Open Folder**, and navigate to `~/Code/{FIRST_NAME}-brain`. You'll see all five parts sitting right there — CLAUDE.md, context, skills, memory, hooks.
+>
+> Take a look around. This is yours. Tell me when you can see the files.
+
+Wait.
+
+### 7.4 Upload your context docs
+
+> Now we load your brain with your business context — the stuff that makes Claude actually useful instead of generic.
+>
+> Think: the problem you solve, who you solve it for, how you solve it, your voice, your offer, your positioning. Anything that describes who you are and how you work.
+>
+> It doesn't need to be formatted or official. A Google Doc, a deck, a bio, a proposal you've sent before, notes you've taken — anything works. We're just getting it in here so Claude has something real to work with.
+>
+> Paste the first thing here. Tell me what it is in one line before you paste, so I can name the file correctly.
+
+Wait. For each paste:
+- Use their one-line label to generate a short, lowercase, hyphenated filename (e.g. "my positioning doc" → `positioning.md`, "voice notes" → `voice.md`, "about me" → `about.md`)
+- Write the content verbatim to `~/Code/{FIRST_NAME}-brain/context/{filename}`
+- Say: `> Saved to context/{filename}.`
+- Then ask: `> Got it. Anything else? Paste another doc, or say "done" when you're finished.`
+
+Keep accepting pastes until they say done. Don't prompt for specific docs — take whatever they have.
+
+If they say they don't have anything ready: write `context/context-stub.md` with the content `TBD — {FIRST_NAME} to add business context` and move on.
+
+Once they're done, commit:
+
+```bash
+cd ~/Code/{FIRST_NAME}-brain && git add context/ && git commit -m "docs: add business context" && git push
+```
+
+Say: `> All set — your context is in the brain and pushed to GitHub. Claude will read these automatically every session from here on.`
+
+> You can see everything in Cursor under `context/`. To update a doc later, just open the file, paste the new version, save, and push. Your brain updates instantly.
+
+### 7.5 Give Duo access
+
+> One last thing: Erica needs write access to your brain so she can push skill updates and new automations as she builds them.
+>
+> **Click here:** {BRAIN_REPO}/settings/access
+>
+> 1. Click **Add people**
+> 2. Search for `erica@ericaschneider.me`
+> 3. Set permission to **Write**
+> 4. Click **Add {GITHUB_USERNAME} to this repository**
+>
+> Tell me when it's done.
+
+Wait.
+
+> Perfect. You're both connected to the same brain now.
+
+---
+
+## Phase 8: Get oriented
+
+> You've got a brain. Let's make sure you know how to use it. Quick orientation — five things.
+
+Deliver these one at a time, waiting for acknowledgment between each.
+
+### 8.1 How to open your brain
+
+> You're already in your brain right now. This terminal, in this Cursor window, is home base.
+>
+> Any time you close it and want to come back: open Cursor, open the `{FIRST_NAME}-brain` folder, open the terminal. That's it — Claude Code loads and reads your brain automatically.
+>
+> If you're ever in a different terminal: `cd ~/Code/{FIRST_NAME}-brain && claude`.
+
+Wait for "got it" or similar.
+
+### 8.2 Claude Code vs Claude Chat
+
+> Quick distinction worth knowing:
+>
+> - **Claude Code** (what you're using now): handles automations, file coordination, pushing to GitHub, and running skills. This is your co-founder's operating system.
+> - **Claude Chat** (claude.ai): better for creative work — writing, brainstorming, editing. Keep using it for that.
+>
+> They're not competing. Use Code for the infrastructure; use Chat for the creative work.
+
+Wait.
+
+### 8.3 Plan mode
+
+> Before you ask Claude Code to build something complex, hit **Shift+Tab** to cycle into plan mode. It'll think through the approach and show you the plan before touching any files.
+>
+> This saves a lot of tokens and catches bad ideas early. Once you're happy with the plan, hit Enter and it executes.
+
+Wait.
+
+### 8.4 Saving your session
+
+> Claude Code doesn't automatically remember previous conversations. When you're mid-session and need to stop, type:
+>
+> `/handoff`
+>
+> It'll save everything — what you were building, decisions made, where to pick up next time. When you come back, type `/handoff` again and it'll reload the context.
+
+Wait.
+
+### 8.5 What to build first
+
+> The fastest way to get value out of your brain is to start with one thing you do manually every week that you hate.
+>
+> Could be: prepping for client calls, writing recaps, summarizing transcripts, drafting proposals, anything.
+>
+> What's the most annoying manual task in your week right now? (One sentence is fine — we're not scoping it, just planting a flag.)
+
+Wait. Capture their answer and write it to `context/first-build.md` as a single line: `First build target: {their answer}`. Commit and push.
+
+> Got it. Erica will see that when she picks up your repo.
 
 ---
 
 ## Writing the brief
 
-After context capture (or skip), write `context/client-brief.md`:
+After the orientation, write `context/client-brief.md`:
 
 ```markdown
 # Client Brief — {FIRST_NAME}
 
 *Generated by /onboard on {date}.*
-
-## Foundation
-- See `context/wireframe.md` (Core Offer Wireframe)
-- See `context/problem-framing.md`
-- See `context/positioning-anchors.md`
-
-## Voice
-See `context/voice.md`.
 
 ## Infrastructure
 - n8n: {N8N_URL}
@@ -479,71 +737,58 @@ See `context/voice.md`.
 - Slack channel: {SLACK_CHANNEL_ID}
 - Database: {NOTION_OR_SHEETS} {if sheets}({SHEETS_URL}){/if}
 - Meeting tool: {MEETING_TOOL}
+- GitHub: {BRAIN_REPO}
 - All API keys sent to Erica via Slack ✓
 
-## Tools in use
-{Q5 — list with specifics, or "TBD — captured async" if skipped}
+## First build target
+See `context/first-build.md`.
 
-## Weekly manual work (opportunity map)
-{Q6 — bullet list, each flagged "LIKELY AUTOMATABLE" / "NEEDS SCOPING" / "KEEP MANUAL", or "TBD"}
-
-## Top priority automation
-{Q7 — or "TBD"}
-
-## Automation wishlist
-{Q8 — numbered, or "TBD"}
-
-## Other context
-{Q9 — or "TBD"}
+## Context docs
+Files uploaded during onboarding — see `context/` folder.
+(Any TBD stubs = client had nothing ready. Erica to follow up.)
 
 ---
 
 ## Duo action items
 
 - [ ] Wire all credentials into client's n8n
-- [ ] Confirm tool access for top priority
-- [ ] Build top priority workflow in client's n8n
+- [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (Duo's bot token) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column)
+- [ ] Build first automation (see first-build.md)
 - [ ] Export workflow JSON to `n8n-workflows/`
 - [ ] Schedule build session
-{if context skipped}- [ ] Capture context async via Slack{/if}
 ```
 
-If context was captured live, also write each pasted doc to its own file:
-- `context/wireframe.md` — Q1 verbatim
-- `context/problem-framing.md` — Q2 verbatim
-- `context/positioning-anchors.md` — Q3 verbatim
-- `context/voice.md` — Q4 verbatim
+Commit and push the brief:
+
+```bash
+git add context/client-brief.md && git commit -m "docs: add client brief" && git push
+```
 
 ## Close
 
 > All done, {FIRST_NAME}. Here's where you stand:
 >
-> - **n8n live at:** {N8N_URL}
-> - **All API keys** sent to Erica in Slack
-> - **Database:** {NOTION_OR_SHEETS}
-> - **Meeting tool:** {MEETING_TOOL}
-> {if context captured}- **Foundation, voice, wishlist** all captured{/if}
-> {if context skipped}- **Context capture** pending — Erica will grab it from you async{/if}
+> - **Brain:** live at `{BRAIN_REPO}` and cloned to `~/Code/{FIRST_NAME}-brain`
+> - **Context docs** loaded — Claude knows your business ✓
+> - **All API keys** sent to Erica in Slack ✓
+> - **Cursor** connected and your brain is open
 >
 > **What happens next:**
 >
 > 1. Erica wires every credential into your n8n. Usually within 24 hours.
-> 2. She picks the top priority from your wishlist (or asks you if it's not obvious).
-> 3. She builds the first automation. Pings you when it's live.
-> 4. You test it, tell her what breaks, she iterates.
+> 2. She picks up your first build target and builds the automation. Pings you when it's live.
+> 3. You test it, tell her what breaks, she iterates.
 >
-> From now on, every time you open Claude Code in this folder (`cd ~/Code/{FIRST_NAME}-coach && claude`), it'll load your context. Anything Erica builds in your n8n runs automatically — you don't need to do anything.
+> From now on: `cd ~/Code/{FIRST_NAME}-brain && claude` is home base. Open it, build things, run your skills.
 >
-> One last thing: **send Erica a quick "I'm done" message in Slack.** She'll take it from there.
+> **Send Erica a quick "I'm done" message in Slack.** She'll take it from there.
 >
 > Talk soon.
 
 ## What NOT to do
 
-- Don't skip steps, even if they say "I'll do it later"
-- Don't accept marketing-speak in Q5-Q9. Probe until you get specifics.
-- Don't ask more than 9 questions in Phase 7
-- Don't try to scope or design automations. Just capture. Duo builds.
-- Don't write `context/` files until the entire flow is complete (or context is being skipped — then just write the brief stub)
-- Don't use emojis in any of the written files
+- Don't ask business interview questions — context is the four doc pastes, not a Q&A session
+- Don't skip the Cursor step — it's how clients see and understand their brain
+- Don't skip the GitHub repo step — Duo needs access from day one
+- Don't accept "I'll do it later" on the brain scaffold — it takes 5 minutes and is the whole point
 - Don't ever ask the client to paste an API key in the terminal. Always Slack to Erica.
