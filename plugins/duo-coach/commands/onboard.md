@@ -168,9 +168,9 @@ Wait. Save as `{N8N_URL}`. Strip trailing slash.
 > 4. Click **Save**
 > 5. Copy the key — ⚠️ this is the only time you'll see it
 >
-> ⚠️ **Send this key to Erica in Slack. Do NOT paste it here.**
+> ⚠️ **Send Erica two things in Slack — the API key AND your n8n URL (`{N8N_URL}`). Do NOT paste the key here.**
 >
-> Tell me "sent" when it's in Slack.
+> Tell me "sent" when both are in Slack.
 
 Wait. Save `{N8N_API_KEY_SENT} = true`. If they say the API menu is missing → most likely they're on the free trial, not Starter. Walk them back to upgrade.
 
@@ -383,8 +383,6 @@ Wait. Save as `{MEETING_TOOL}`.
 >    - **Webhook secret** (right below it)
 >
 > ⚠️ **Send both to Erica in Slack — label them "Fathom API key" and "Fathom webhook secret." Do NOT paste them here.**
->
-> Note: Fathom's API key requires a paid plan. If you don't see the API key option, you'll need to upgrade Fathom first.
 >
 > Tell me "sent."
 
