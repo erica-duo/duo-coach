@@ -171,6 +171,66 @@ Output this checklist with all values pre-filled. Erica works through it top to 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-After Erica confirms each section done, mark it `[x]`. When all are done:
+After Erica confirms each section done, mark it `[x]`. When all are done, move to Step 5.
 
+---
+
+## Step 5 — Generate welcome PDF
+
+Read `~/Code/clients/{SLUG}/context/first-build.md` for the first build target. Save as `{FIRST_BUILD}`. If the file doesn't exist or is empty, use "your first automation" as a fallback.
+
+Read the HTML template at `~/Library/Mobile Documents/com~apple~CloudDocs/duo-brain/deliverables/welcome-to-your-ai-cofounder.html`.
+
+Generate a personalized copy by replacing the following:
+
+| Placeholder | Replace with |
+|---|---|
+| `{your-name}-coach` | `{BRAIN_REPO}` |
+| `{your-username}/{your-name}-coach` | `{GITHUB_USERNAME}/{BRAIN_REPO}` |
+| `~/Code/{your-name}-coach` | `~/Code/{BRAIN_REPO}` |
+| `cd ~/Code/{your-name}-coach` | `cd ~/Code/{BRAIN_REPO}` |
+| `Step 1 of forever — complete` | `{CLIENT}, you're live.` |
+| `Welcome to <span>the future.</span>` | `Welcome to <span>the future,<br>{CLIENT}.</span>` |
+| `You just spun up your own AI co-founder. Here's what we built tonight, what happens next, and what you can play with right now.` | `You just spun up your own AI co-founder. Here's what we built, what we're building next for you specifically, and what you can do right now.` |
+
+Also personalize the "six things" built items to reflect their actual setup:
+- Database item: replace "Notion or Google Sheets, whichever you picked" with the actual choice — e.g. "Notion" or "Google Sheets — your `{SHEETS_URL}`"
+- Meeting tool item: replace "Fathom, Granola, or other" with their actual tool — e.g. "Fathom"
+- GitHub item: insert their actual repo URL and local path
+
+Then insert a new section after "What we built" and before "The deal". Use this HTML:
+
+```html
+<!-- What we're building first -->
+<section>
+  <div class="wrap">
+    <div class="label">What we're building first</div>
+    <h2>Your first automation is already in the queue.</h2>
+    <p>Based on what you told us during setup, here's the first thing we're building for you:</p>
+    <div class="built" style="margin-top: 28px;">
+      <div class="built-item">
+        <span class="check">→</span>
+        <div><strong>First build</strong><span>{FIRST_BUILD}</span></div>
+      </div>
+    </div>
+    <p style="margin-top: 24px;">We'll ping you in Slack when it's live. Usually within 24–48 hours.</p>
+  </div>
+</section>
+```
+
+Save the personalized HTML to:
+`~/Library/Mobile Documents/com~apple~CloudDocs/duo-brain/deliverables/{SLUG}-welcome.html`
+
+Then generate the PDF:
+
+```bash
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
+  --headless --disable-gpu \
+  --print-to-pdf="$HOME/Downloads/{SLUG}-welcome.pdf" \
+  --print-to-pdf-no-header \
+  "$HOME/Library/Mobile Documents/com~apple~CloudDocs/duo-brain/deliverables/{SLUG}-welcome.html"
+```
+
+> Welcome PDF saved to `~/Downloads/{SLUG}-welcome.pdf`. Send it to {CLIENT} in Slack.
+>
 > All wired. {CLIENT} is live.
