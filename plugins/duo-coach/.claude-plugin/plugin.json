@@ -1,6 +1,6 @@
 {
   "name": "duo-coach",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Duo's universal skills, hooks, and onboarding flow for client AI co-founders.",
   "author": {
     "name": "Duo",
@@ -9,3 +9,4 @@
   "homepage": "https://github.com/erica-duo/duo-coach-plugin",
   "license": "MIT"
 }
+
