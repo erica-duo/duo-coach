@@ -5,6 +5,7 @@ Minimal Claude Code plugin for Duo clients. Gets their infrastructure stood up �
 ## What's in here
 
 - `/onboard` — 7-question interview that captures their wireframe, voice print, tools, and automation wishlist
+- `hooks/pushback.py` — the "don't give up" hook. When Claude ends a reply with "I can't do that" or "I couldn't find it," this hook automatically pushes back the way Duo would — try alternate spellings, check another data source, use a different tool — so clients don't have to know what to say. Caps at 2 pushbacks per session so it never loops.
 - `templates/docs/SETUP.md` — the 45-minute onboarding call script
 - `templates/docs/IDEAS.md` — examples of what Duo builds for clients
 
