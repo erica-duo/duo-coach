@@ -1,7 +1,7 @@
 {
   "name": "duo-coach",
-  "version": "0.7.2",
-  "description": "Duo's universal skills, hooks, and onboarding flow for client AI co-founders.",
+  "version": "0.8.0",
+  "description": "Duo's universal skills and onboarding flow for client AI co-founders.",
   "author": {
     "name": "Duo",
     "url": "https://duoworks.co"
