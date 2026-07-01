@@ -72,7 +72,7 @@ if (-not (Test-Cmd git)) {
 }
 
 # ── 3. Node ─────────────────────────────────────────────────────────
-Step "Checking Node.js (required for Claude Code)"
+Step "Checking Node.js (used by MCP servers during onboarding)"
 
 if (-not (Test-Cmd node)) {
   Install-WithWinget 'OpenJS.NodeJS.LTS' 'Node.js'
@@ -104,10 +104,21 @@ Ok "GitHub authenticated as $GH_USER"
 Step "Checking Claude Code"
 
 if (-not (Test-Cmd claude)) {
-  Warn "Claude Code not installed. Installing via npm..."
-  npm install -g @anthropic-ai/claude-code
+  Warn "Claude Code not installed. Installing via the native installer..."
+  # Native Windows installer — does NOT require Node/npm.
+  irm https://claude.ai/install.ps1 | iex
   Update-Path
-  Ok "Claude Code installed"
+  # The native installer drops claude under %USERPROFILE%\.local\bin;
+  # make sure it's on PATH for the rest of this session.
+  $claudeBin = Join-Path $HOME '.local\bin'
+  if ((Test-Path $claudeBin) -and ($env:Path -notlike "*$claudeBin*")) {
+    $env:Path = "$env:Path;$claudeBin"
+  }
+  if (Test-Cmd claude) {
+    Ok "Claude Code installed"
+  } else {
+    Warn "Claude Code installed, but not yet on PATH. Open a NEW PowerShell window after this finishes."
+  }
   Write-Host
   Write-Host "  You'll need to run ``claude`` once after this script finishes" -ForegroundColor White
   Write-Host "  to authenticate (browser flow). We'll remind you at the end." -ForegroundColor White
