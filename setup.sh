@@ -79,7 +79,7 @@ else
 fi
 
 # ── 3. Node ─────────────────────────────────────────────────────────
-step "Checking Node.js (required for Claude Code)"
+step "Checking Node.js (used by MCP servers during onboarding)"
 
 if ! command -v node &>/dev/null; then
   warn "Node not installed. Installing via Homebrew..."
@@ -113,9 +113,25 @@ GH_USER=$(gh api user --jq '.login')
 step "Checking Claude Code"
 
 if ! command -v claude &>/dev/null; then
-  warn "Claude Code not installed. Installing via npm..."
-  npm install -g @anthropic-ai/claude-code
-  ok "Claude Code installed"
+  warn "Claude Code not installed. Installing via the native installer..."
+  # Native installer — does NOT require Node/npm.
+  curl -fsSL https://claude.ai/install.sh | bash
+
+  # The native installer drops claude under ~/.local/bin; make sure it's on
+  # PATH for the rest of this session and persist it for future sessions.
+  if [[ -x "$HOME/.local/bin/claude" ]] && [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+    LOCAL_BIN_LINE='export PATH="$HOME/.local/bin:$PATH"'
+    if ! grep -qF "$LOCAL_BIN_LINE" "$HOME/.zprofile" 2>/dev/null; then
+      echo "$LOCAL_BIN_LINE" >> "$HOME/.zprofile"
+    fi
+  fi
+
+  if command -v claude &>/dev/null; then
+    ok "Claude Code installed"
+  else
+    warn "Claude Code installed, but not yet on PATH. Open a NEW terminal window after this finishes."
+  fi
   echo
   echo "  ${BOLD}You'll need to run \`claude\` once after this script finishes${RESET}"
   echo "  ${BOLD}to authenticate (browser flow). We'll remind you at the end.${RESET}"
