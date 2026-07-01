@@ -6,7 +6,26 @@ Duo's Claude Code marketplace. Contains the `duo-coach` plugin — an onboarding
 
 If Nick or Erica is on a call with you, follow `plugins/duo-coach/templates/docs/SETUP.md`.
 
-To install the plugin into your Claude Code setup:
+### One-line setup
+
+**Mac / Linux** — paste into Terminal:
+
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/erica-duo/duo-coach/main/setup.sh)
+```
+
+**Windows** — paste into PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/erica-duo/duo-coach/main/setup.ps1 | iex
+```
+
+Either script installs the prerequisites (Git, Node, GitHub CLI, Claude Code),
+creates your repo from the Duo template, and installs the plugin. Then run `/onboard`.
+
+### Manual plugin install
+
+If you already have Claude Code set up:
 
 ```bash
 claude plugin marketplace add erica-duo/duo-coach
