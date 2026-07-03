@@ -1,82 +1,68 @@
-# Client Setup — One Command + /onboard
+# Client Setup — Desktop App + /onboard
 
-The full Duo client onboarding is two steps:
+*Duo-internal runbook. The client never opens a terminal.*
 
-1. Run the bootstrap script (sets up GitHub repo, plugin, Claude Code) — ~5 min
-2. Run `/onboard` (sets up n8n, all credentials, captures their wireframe + wishlist) — ~40 min
+The full onboarding is three steps:
 
-Total: ~45 min on a screen-share call.
+1. **Pre-call (client, async, ~10 min):** install the Claude Code desktop app + sign in
+2. **Bootstrap (on the call, ~5 min):** client pastes one kickoff prompt; Claude creates the repo, invites Duo, installs the plugin — all by itself
+3. **`/onboard` (on the call, ~25 min):** credentials + brain scaffold + orientation
 
----
-
-## Pre-call prep (sent to client 1-2 days out)
-
-Client needs:
-- GitHub account
-- Homebrew (https://brew.sh)
-- Claude Code (https://docs.claude.com/claude-code) — run `claude` once to auth
-- Anthropic account at console.anthropic.com with ~$20 in credits
-- Notion workspace they're an admin of
-
-That's it.
+Total: ~30 minutes of call time, all clicking, no typing commands.
 
 ---
 
-## Step 1 — One-command bootstrap
+## Pre-call message (send 1-2 days out)
 
-In their terminal:
+Client needs, before the call:
 
-```bash
-bash <(curl -sSL https://raw.githubusercontent.com/erica-duo/duo-coach/main/setup.sh)
+- The **Claude Code desktop app** installed and signed in (they need a Claude Pro or Max plan — confirm which plan Duo recommends for them)
+- A **Slack workspace** they admin
+- Ideally: a Notion workspace they admin (or we fall back to Google Sheets)
+
+The async message template lives in duo-brain at `context/client-onboarding-message.md`.
+
+## Step 1 — Kickoff prompt (start of call)
+
+Client opens the Claude Code app, starts a session anywhere, and pastes:
+
+```
+I'm a new Duo client. Fetch https://raw.githubusercontent.com/erica-duo/duo-coach/main/BOOTSTRAP.md and follow it exactly.
 ```
 
-This script:
+Claude then (client just answers questions + clicks browser auth links):
 
-1. Verifies prereqs (git, brew)
-2. Installs `gh` CLI if missing
-3. Auths `gh` (browser flow)
-4. Asks for their first name → creates `{firstname}-coach` repo from `erica-duo/duo-starter-template`
-5. Adds Duo (`erica-duo`) as a Write collaborator
-6. Clones the repo to `~/Code/{firstname}-coach`
-7. Installs the duo-coach plugin
+1. Ensures git + gh exist (standalone gh binary — never Homebrew)
+2. GitHub account + `gh auth login --web`
+3. Creates `{firstname}-brain` (private), invites `erica-duo` with Write, clones to `~/Code/{firstname}-brain`
+4. Installs the duo-coach plugin (CLI, or the client types two `/plugin` slash commands)
+5. Tells the client to open the brain folder in the app and run `/onboard`
 
-If Claude Code isn't installed, the script tells them where to install it and exits cleanly. Re-run is idempotent.
-
----
-
-## Step 2 — Run /onboard
-
-```bash
-cd ~/Code/{firstname}-coach
-claude
-```
-
-In Claude:
-```
-/onboard
-```
-
-The plugin's `/onboard` skill walks them through:
+## Step 2 — /onboard
 
 | Phase | What | Time |
 |---|---|---|
-| 1 | Deploy n8n on Railway | ~5 min |
-| 2 | Create Anthropic key + wire into n8n | ~3 min |
-| 3 | Create Slack app + token + wire into n8n | ~7 min |
-| 4 | Create Notion integration + wire into n8n | ~5 min |
-| 5 | 7 questions (wireframe, voice, tools, week, wishlist) | ~15 min |
+| 0 | Silent bootstrap verification (Claude-only) | ~0 |
+| 1 | n8n Cloud — Starter plan + API key → Erica | ~5 min |
+| 2 | Anthropic key + credits → Erica | ~3 min |
+| 3 | Slack app **from a manifest** (pre-scoped) + tokens → Erica | ~3 min |
+| 4 | Notion integration or Google Sheet | ~5 min |
+| 5 | Meeting tool (Fathom/Granola/other) key → Erica | ~3 min |
+| 6 | Confirm Erica has everything | ~1 min |
+| 7 | Brain scaffold — Claude builds it while they watch; optional context seeding | ~3 min |
+| 8 | Orientation (open/close, plan mode, /handoff, first build target) | ~5 min |
 
-Output: `context/wireframe.md`, `context/voice.md`, `context/client-brief.md`.
+All keys go to Erica via Slack DM — never pasted into the chat.
 
----
+Output: `context/client-brief.md` + `context/first-build.md` + `GETTING-STARTED.md`, pushed.
 
 ## What Duo handles after the call
 
-1. `git pull` the client's brief
-2. Pick top priority from their automation wishlist
-3. Build it in their n8n (you have Owner access)
-4. Export workflow JSON to their `n8n-workflows/` folder
-5. Commit + push to their repo
+1. Wire all credentials into the client's n8n
+2. Push context docs (positioning, problem framing, anchors, voiceprint) to `context/`
+3. Add the two GitHub secrets for push notifications (`SLACK_BOT_TOKEN`, `SLACK_CHANNEL_ID`)
+4. Build the first automation (see `context/first-build.md`)
+5. Run duo-brain's `/new-client-setup` to add them to all Duo systems
 
 ---
 
@@ -84,10 +70,11 @@ Output: `context/wireframe.md`, `context/voice.md`, `context/client-brief.md`.
 
 | Problem | Fix |
 |---|---|
-| `setup.sh` says "Homebrew not installed" | Install from brew.sh, re-run setup.sh |
-| `setup.sh` says "Claude Code not installed" | Install from docs.claude.com/claude-code, run `claude` once, re-run setup.sh |
-| Repo creation says "already exists" | Script handles this — keeps going. Safe to re-run |
-| Slack bot can't post | Bot must be `/invite @{app-name}`'d from inside the channel |
+| Client's session isn't in a brain repo at /onboard | Phase 0 detects it and re-runs the bootstrap automatically |
+| gh install fails | BOOTSTRAP uses the standalone binary release; on Windows it's winget. If both fail, escalate — don't fall back to Homebrew |
+| Slack workspace missing from dropdown | Client isn't signed into Slack in the browser — sign in, refresh |
+| Slack bot can't post | Bot must be added to the channel from inside the channel (`@app-name` → Add) |
 | Notion integration can't read pages | Connect integration to each specific page or DB (Page → ... → Connections) |
+| n8n API menu missing | Client is on the free trial — needs Starter plan |
 | n8n credential test fails | 99% of the time it's whitespace in the pasted token |
-| Railway sleeps the n8n | Upgrade to Railway "always on" tier (~$5/mo) |
+| Client wants terminal/Cursor anyway | Fine — legacy `setup.sh` still works (see README) |
