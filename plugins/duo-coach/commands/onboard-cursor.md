@@ -1,5 +1,5 @@
 ---
-description: LEGACY Cursor-based Duo client onboarding — Cursor + GitHub setup, credentials, brain scaffold, and orientation. Use for clients on the Cursor/terminal flow; new clients use /onboard (desktop app).
+description: Duo client onboarding for Cursor setups — credentials (n8n / Anthropic / Slack / Notion or Sheets / meeting tool), brain scaffold, and orientation. Run this after the terminal setup script.
 ---
 
 # /onboard-cursor — New Client Setup (Cursor flow)
