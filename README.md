@@ -13,7 +13,9 @@ I'm a new Duo client. Fetch https://raw.githubusercontent.com/erica-duo/duo-coac
 
 Claude handles the rest — it creates your brain, connects Duo, and hands you to `/onboard`. You never touch a terminal.
 
-## Legacy: terminal setup (only if you prefer a terminal)
+## Legacy: Cursor / terminal setup (for clients on the original flow)
+
+Use the script below, then run `/onboard-cursor` (NOT `/onboard`, which is the desktop-app flow).
 
 **Mac / Linux** — paste into Terminal:
 
@@ -36,7 +38,7 @@ claude plugin marketplace add erica-duo/duo-coach
 claude plugin install duo-coach@duo-coach
 ```
 
-Then run `/onboard`.
+Then run `/onboard` (desktop app) or `/onboard-cursor` (Cursor/terminal).
 
 ## What's in here
 
