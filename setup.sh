@@ -186,8 +186,15 @@ ok "Invite sent to erica-duo"
 # ── 9. Clone repo ───────────────────────────────────────────────────
 step "Cloning the repo to your machine"
 
-CODE_DIR="$HOME/Code"
-mkdir -p "$CODE_DIR"
+# Clone wherever the client ran the script from (their Desktop business
+# folder, per Duo's flow). Fall back to ~/Code only if they ran it from
+# the home directory itself.
+if [[ "$PWD" == "$HOME" ]]; then
+  CODE_DIR="$HOME/Code"
+  mkdir -p "$CODE_DIR"
+else
+  CODE_DIR="$PWD"
+fi
 cd "$CODE_DIR"
 
 if [[ -d "${REPO_NAME}" ]]; then

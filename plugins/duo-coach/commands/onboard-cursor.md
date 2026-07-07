@@ -479,7 +479,7 @@ Wait. Once confirmed:
 > Run:
 >
 > ```
-> mkdir -p ~/Code && gh repo clone {GITHUB_USERNAME}/{companyslug}-brain ~/Code/{companyslug}-brain
+> gh repo clone {GITHUB_USERNAME}/{companyslug}-brain
 > ```
 >
 > Tell me when it's done.
@@ -528,9 +528,7 @@ Write `CLAUDE.md` to the repo root `CLAUDE.md`:
 
 ## How to open your brain
 
-```
-cd ~/Code/{companyslug}-brain && claude
-```
+Open **Cursor** → open this folder (File → Open Folder, or recents) → open the terminal (Terminal → New Terminal) → type `claude`. That's it — Claude reads this brain automatically.
 
 ## What's in here
 
@@ -609,41 +607,15 @@ git add . && git commit -m "init: brain scaffold" && git push
 
 Say: `> Done. Your brain is live.`
 
-> Now open Cursor, go to **File → Open Folder**, and navigate to `~/Code/{companyslug}-brain`. You'll see all five parts sitting right there — CLAUDE.md, context, skills, memory, hooks.
+> Now open Cursor, go to **File → Open Folder**, and navigate to your brain folder (inside the folder you made on your Desktop). You'll see all five parts sitting right there — CLAUDE.md, context, skills, memory, hooks.
 >
 > Take a look around. This is yours. Tell me when you can see the files.
 
 Wait.
 
-### 7.4 Upload your context docs
+### 7.4 (removed — no doc collection)
 
-> Now we load your brain with your business context — the stuff that makes Claude actually useful instead of generic.
->
-> Think: the problem you solve, who you solve it for, how you solve it, your voice, your offer, your positioning. Anything that describes who you are and how you work.
->
-> It doesn't need to be formatted or official. A Google Doc, a deck, a bio, a proposal you've sent before, notes you've taken — anything works. We're just getting it in here so Claude has something real to work with.
->
-> Paste the first thing here. Tell me what it is in one line before you paste, so I can name the file correctly.
-
-Wait. For each paste:
-- Use their one-line label to generate a short, lowercase, hyphenated filename (e.g. "my positioning doc" → `positioning.md`, "voice notes" → `voice.md`, "about me" → `about.md`)
-- Write the content verbatim to `context/{filename}`
-- Say: `> Saved to context/{filename}.`
-- Then ask: `> Got it. Anything else? Paste another doc, or say "done" when you're finished.`
-
-Keep accepting pastes until they say done. Don't prompt for specific docs — take whatever they have.
-
-If they say they don't have anything ready: write `context/context-stub.md` with the content `TBD — {FIRST_NAME} to add business context` and move on.
-
-Once they're done, commit:
-
-```bash
-git add context/ && git commit -m "docs: add business context" && git push
-```
-
-Say: `> All set — your context is in the brain and pushed to GitHub. Claude will read these automatically every session from here on.`
-
-> You can see everything in Cursor under `context/`. To update a doc later, just open the file, paste the new version, save, and push. Your brain updates instantly.
+Do NOT ask for wireframes, positioning docs, voice docs, or any business context. Erica pushes all context docs to `context/` after the call. Onboarding is credentials + GitHub + orientation only.
 
 ### 7.5 Give Duo access
 
@@ -676,7 +648,7 @@ Deliver these one at a time, waiting for acknowledgment between each.
 >
 > Any time you close it and want to come back: open Cursor, open the `{companyslug}-brain` folder, open the terminal. That's it — Claude Code loads and reads your brain automatically.
 >
-> If you're ever in a different terminal: `cd ~/Code/{companyslug}-brain && claude`.
+> If you're ever in a different terminal: `open your brain folder in Cursor, then in its terminal run: claude`.
 
 Wait for "got it" or similar.
 
@@ -745,14 +717,14 @@ After the orientation, write `context/client-brief.md`:
 See `context/first-build.md`.
 
 ## Context docs
-Files uploaded during onboarding — see `context/` folder.
-(Any TBD stubs = client had nothing ready. Erica to follow up.)
+None collected during onboarding (by design). Erica to push positioning, problem framing, and voice docs to `context/`.
 
 ---
 
 ## Duo action items
 
 - [ ] Wire all credentials into client's n8n
+- [ ] Push context docs (positioning, problem framing, voice) to `context/`
 - [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (Duo's bot token) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column)
 - [ ] Build first automation (see first-build.md)
 - [ ] Export workflow JSON to `n8n-workflows/`
@@ -769,7 +741,7 @@ git add context/client-brief.md && git commit -m "docs: add client brief" && git
 
 > All done, {FIRST_NAME}. Here's where you stand:
 >
-> - **Brain:** live at `{BRAIN_REPO}` and cloned to `~/Code/{companyslug}-brain`
+> - **Brain:** live at `{BRAIN_REPO}` and cloned to your machine
 > - **Context docs** loaded — Claude knows your business ✓
 > - **All API keys** sent to Erica in Slack ✓
 > - **Cursor** connected and your brain is open
@@ -780,7 +752,7 @@ git add context/client-brief.md && git commit -m "docs: add client brief" && git
 > 2. She picks up your first build target and builds the automation. Pings you when it's live.
 > 3. You test it, tell her what breaks, she iterates.
 >
-> From now on: `cd ~/Code/{companyslug}-brain && claude` is home base. Open it, build things, run your skills.
+> From now on: `open your brain folder in Cursor, then in its terminal run: claude` is home base. Open it, build things, run your skills.
 >
 > **Send Erica a quick "I'm done" message in Slack.** She'll take it from there.
 >
