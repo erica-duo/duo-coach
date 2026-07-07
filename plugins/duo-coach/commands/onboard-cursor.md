@@ -19,7 +19,8 @@ You are a patient, hand-holding instructor. Every step is "click here, do this, 
 **Save state in memory** as the conversation progresses:
 - `{FIRST_NAME}` — captured from the user's first response
 - `{GITHUB_USERNAME}` — their GitHub username
-- `{BRAIN_REPO}` — their brain repo name (default: `{firstname}-brain`)
+- `{COMPANY_NAME}` / `{companyslug}` — business name + kebab slug (repo naming)
+- `{BRAIN_REPO}` — their brain repo name (default: `{companyslug}-brain`)
 - `{N8N_URL}` — their n8n URL
 - `{ANTHROPIC_KEY_SENT}` — confirmed sent to Erica (boolean)
 - `{N8N_API_KEY_SENT}` — confirmed sent to Erica
@@ -61,9 +62,9 @@ If `context/client-brief.md` already exists, ask: "Looks like you've onboarded b
 > - "I'm stuck" or "I don't see that" is a fine answer. We'll figure it out together.
 > - If you really get stuck, ping Erica or Nick in Slack — they can jump in.
 >
-> First, what's your first name? (Just so I can refer to you correctly.)
+> First, two quick things: what's your first name, and what's your business called?
 
-Wait. Save as `{FIRST_NAME}`. Capitalize the first letter for display purposes.
+Wait. Save `{FIRST_NAME}` (capitalize for display) and `{COMPANY_NAME}`. Derive `{companyslug}`: lowercase, spaces/punctuation to hyphens, drop suffixes like LLC/Inc (e.g. "Outpost Event Co" → `outpost-event-co`).
 
 > Got it, {FIRST_NAME}. Ready when you are — say "go" and we'll start.
 
@@ -442,15 +443,17 @@ Wait. Once confirmed:
 
 ### 7.1 Create the GitHub repo
 
+**First check:** if the setup script already created and cloned a repo (you're currently inside a `*-brain` or `*-coach` git folder — check `git remote get-url origin`), save it as `{BRAIN_REPO}`, tell the client "your repo already exists from setup — skipping ahead," and jump to 7.3.
+
 > **Click here:** https://github.com/new
 >
-> 1. Repository name: `{FIRST_NAME}-brain` (example: `jon-brain`) — or tell me a different name you prefer
+> 1. Repository name: `{companyslug}-brain` (example: `outpost-event-co-brain`) — or tell me a different name you prefer
 > 2. Description: `My AI co-founder brain`
 > 3. Set it to **Private**
 > 4. Check **Add a README file**
 > 5. Click **Create repository**
 >
-> Tell me when it's created and paste the repo URL (it'll look like `https://github.com/{GITHUB_USERNAME}/{FIRST_NAME}-brain`).
+> Tell me when it's created and paste the repo URL (it'll look like `https://github.com/{GITHUB_USERNAME}/{companyslug}-brain`).
 
 Wait. Save repo URL as `{BRAIN_REPO}`.
 
@@ -476,7 +479,7 @@ Wait. Once confirmed:
 > Run:
 >
 > ```
-> mkdir -p ~/Code && gh repo clone {GITHUB_USERNAME}/{FIRST_NAME}-brain ~/Code/{FIRST_NAME}-brain
+> mkdir -p ~/Code && gh repo clone {GITHUB_USERNAME}/{companyslug}-brain ~/Code/{companyslug}-brain
 > ```
 >
 > Tell me when it's done.
@@ -507,7 +510,7 @@ Run each step below, narrating out loud as you go:
 Say: `> Creating your folders — context, skills, memory, and hooks...`
 
 ```bash
-cd ~/Code/{FIRST_NAME}-brain && mkdir -p context skills memory .claude/hooks
+mkdir -p context skills memory .claude/hooks
 ```
 
 Say: `> Done.`
@@ -516,17 +519,17 @@ Say: `> Done.`
 
 Say: `> Writing your CLAUDE.md — this is the file that tells me who you are every time you open your brain...`
 
-Write `CLAUDE.md` to `~/Code/{FIRST_NAME}-brain/CLAUDE.md`:
+Write `CLAUDE.md` to the repo root `CLAUDE.md`:
 
 ```markdown
-# {FIRST_NAME}'s Brain
+# {COMPANY_NAME} Brain
 
-Your AI co-founder, set up by Duo.
+{FIRST_NAME}'s AI co-founder, set up by Duo.
 
 ## How to open your brain
 
 ```
-cd ~/Code/{FIRST_NAME}-brain && claude
+cd ~/Code/{companyslug}-brain && claude
 ```
 
 ## What's in here
@@ -606,7 +609,7 @@ git add . && git commit -m "init: brain scaffold" && git push
 
 Say: `> Done. Your brain is live.`
 
-> Now open Cursor, go to **File → Open Folder**, and navigate to `~/Code/{FIRST_NAME}-brain`. You'll see all five parts sitting right there — CLAUDE.md, context, skills, memory, hooks.
+> Now open Cursor, go to **File → Open Folder**, and navigate to `~/Code/{companyslug}-brain`. You'll see all five parts sitting right there — CLAUDE.md, context, skills, memory, hooks.
 >
 > Take a look around. This is yours. Tell me when you can see the files.
 
@@ -624,7 +627,7 @@ Wait.
 
 Wait. For each paste:
 - Use their one-line label to generate a short, lowercase, hyphenated filename (e.g. "my positioning doc" → `positioning.md`, "voice notes" → `voice.md`, "about me" → `about.md`)
-- Write the content verbatim to `~/Code/{FIRST_NAME}-brain/context/{filename}`
+- Write the content verbatim to `context/{filename}`
 - Say: `> Saved to context/{filename}.`
 - Then ask: `> Got it. Anything else? Paste another doc, or say "done" when you're finished.`
 
@@ -635,7 +638,7 @@ If they say they don't have anything ready: write `context/context-stub.md` with
 Once they're done, commit:
 
 ```bash
-cd ~/Code/{FIRST_NAME}-brain && git add context/ && git commit -m "docs: add business context" && git push
+git add context/ && git commit -m "docs: add business context" && git push
 ```
 
 Say: `> All set — your context is in the brain and pushed to GitHub. Claude will read these automatically every session from here on.`
@@ -671,9 +674,9 @@ Deliver these one at a time, waiting for acknowledgment between each.
 
 > You're already in your brain right now. This terminal, in this Cursor window, is home base.
 >
-> Any time you close it and want to come back: open Cursor, open the `{FIRST_NAME}-brain` folder, open the terminal. That's it — Claude Code loads and reads your brain automatically.
+> Any time you close it and want to come back: open Cursor, open the `{companyslug}-brain` folder, open the terminal. That's it — Claude Code loads and reads your brain automatically.
 >
-> If you're ever in a different terminal: `cd ~/Code/{FIRST_NAME}-brain && claude`.
+> If you're ever in a different terminal: `cd ~/Code/{companyslug}-brain && claude`.
 
 Wait for "got it" or similar.
 
@@ -766,7 +769,7 @@ git add context/client-brief.md && git commit -m "docs: add client brief" && git
 
 > All done, {FIRST_NAME}. Here's where you stand:
 >
-> - **Brain:** live at `{BRAIN_REPO}` and cloned to `~/Code/{FIRST_NAME}-brain`
+> - **Brain:** live at `{BRAIN_REPO}` and cloned to `~/Code/{companyslug}-brain`
 > - **Context docs** loaded — Claude knows your business ✓
 > - **All API keys** sent to Erica in Slack ✓
 > - **Cursor** connected and your brain is open
@@ -777,7 +780,7 @@ git add context/client-brief.md && git commit -m "docs: add client brief" && git
 > 2. She picks up your first build target and builds the automation. Pings you when it's live.
 > 3. You test it, tell her what breaks, she iterates.
 >
-> From now on: `cd ~/Code/{FIRST_NAME}-brain && claude` is home base. Open it, build things, run your skills.
+> From now on: `cd ~/Code/{companyslug}-brain && claude` is home base. Open it, build things, run your skills.
 >
 > **Send Erica a quick "I'm done" message in Slack.** She'll take it from there.
 >

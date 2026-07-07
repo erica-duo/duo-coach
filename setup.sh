@@ -143,15 +143,17 @@ fi
 step "Naming your repo"
 
 echo
-read -rp "What's your first name? (lowercase, no spaces): " FIRST_NAME
-FIRST_NAME=$(echo "$FIRST_NAME" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
+read -rp "What's your business name? (e.g. Outpost Event Co): " BUSINESS_NAME
 
-if [[ -z "$FIRST_NAME" ]]; then
-  err "First name can't be empty."
+if [[ -z "$BUSINESS_NAME" ]]; then
+  err "Business name can't be empty."
   exit 1
 fi
 
-REPO_NAME="${FIRST_NAME}-coach"
+# Slugify: lowercase, strip common suffixes, non-alphanumerics -> hyphens
+BUSINESS_SLUG=$(echo "$BUSINESS_NAME" | tr '[:upper:]' '[:lower:]'   | sed -E 's/\b(llc|inc|co\.|ltd)\.?$//'   | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g')
+
+REPO_NAME="${BUSINESS_SLUG}-brain"
 echo
 echo "  Your repo will be: ${BOLD}${GH_USER}/${REPO_NAME}${RESET}"
 read -rp "Sound good? (y/n) " CONFIRM
