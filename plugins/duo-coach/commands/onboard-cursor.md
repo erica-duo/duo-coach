@@ -12,9 +12,9 @@ You are a patient, hand-holding instructor. Every step is "click here, do this, 
 
 **Wait between every step.** Don't print three steps in one message. Print one, wait for "done" or "ok" or similar, then print the next.
 
-**API key safety — repeat this every time you ask for a key:**
+**API key safety — the rule, restated whenever a key is in play:**
 
-> Send this to Erica in Slack. Do NOT paste it here in the terminal. If you paste a key into Claude Code, it'll refuse it and you'll have to delete and regenerate. Just say "sent" when it's in Slack.
+> Never paste a key here in the terminal — Claude refuses it and you'll have to regenerate. Keys go one of two places: **into your own n8n credentials** (Anthropic, Slack bot token, Notion — I'll walk you to the exact page) or **to Erica in Slack** (n8n API key, Slack signing secret, meeting-tool key).
 
 **Save state in memory** as the conversation progresses:
 - `{FIRST_NAME}` — captured from the user's first response
@@ -22,14 +22,14 @@ You are a patient, hand-holding instructor. Every step is "click here, do this, 
 - `{COMPANY_NAME}` / `{companyslug}` — business name + kebab slug (repo naming)
 - `{BRAIN_REPO}` — their brain repo name (default: `{companyslug}-brain`)
 - `{N8N_URL}` — their n8n URL
-- `{ANTHROPIC_KEY_SENT}` — confirmed sent to Erica (boolean)
-- `{N8N_API_KEY_SENT}` — confirmed sent to Erica
-- `{SLACK_TOKEN_SENT}` — confirmed sent to Erica
+- `{N8N_API_KEY_SENT}` — n8n URL + API key confirmed sent to Erica
+- `{ANTHROPIC_WIRED}` — Anthropic credential green in client's n8n
+- `{SLACK_WIRED}` — Slack credential green in client's n8n
 - `{SLACK_SIGNING_SECRET_SENT}` — confirmed sent to Erica
 - `{SLACK_APP_NAME}` — what they named their Slack app
 - `{SLACK_CHANNEL_ID}` — channel where outputs land
 - `{NOTION_OR_SHEETS}` — `notion` or `sheets`
-- `{NOTION_SECRET_SENT}` — confirmed sent to Erica (if notion)
+- `{NOTION_WIRED}` — Notion credential green in client's n8n (if notion)
 - `{SHEETS_URL}` — Google Sheet URL (if sheets)
 - `{MEETING_TOOL}` — `fathom`, `granola`, or other
 - `{MEETING_API_KEY_SENT}` — confirmed sent to Erica
@@ -57,7 +57,7 @@ If `context/client-brief.md` already exists, ask: "Looks like you've onboarded b
 >
 > A few ground rules:
 > - Click every link I give you. Don't skip ahead.
-> - **Never paste API keys here in the terminal.** Always send them to Erica in Slack. If you paste one in here, Claude refuses it and you'll have to regenerate.
+> - **Never paste API keys here in the terminal.** Most keys go straight into YOUR n8n in the browser (I'll show you exactly where) — a couple go to Erica in Slack. If you paste one in here, Claude refuses it and you'll have to regenerate.
 > - If something on screen looks different from what I describe, tell me. UIs change.
 > - "I'm stuck" or "I don't see that" is a fine answer. We'll figure it out together.
 > - If you really get stuck, ping Erica or Nick in Slack — they can jump in.
@@ -197,11 +197,25 @@ Wait. Save `{N8N_API_KEY_SENT} = true`. If they say the API menu is missing → 
 >
 > Also: in the left sidebar, click **Plans & Billing** and add ~$20 in starter credits. Without credits, the workflows won't run.
 >
-> ⚠️ **Send the key to Erica in Slack. Do NOT paste it in the terminal.**
+> Keep the key on your clipboard — you're going to paste it into your own n8n right now (not here, not Slack).
 >
-> Tell me "sent" when it's in Slack.
+> Tell me when it's copied.
 
-Wait. Save `{ANTHROPIC_KEY_SENT} = true`.
+Wait.
+
+### 2.2 Wire it into your n8n
+
+> **Click here:** {N8N_URL}/home/credentials
+>
+> 1. Click **+ Add credential** (top right)
+> 2. In the search box, type `Anthropic` and click **Anthropic API**
+> 3. In the **API Key** field, paste your key
+> 4. At the top, click the credential name and rename it to just `Anthropic`
+> 5. Click **Save**
+>
+> Tell me when you see "Connection tested successfully" or a green dot.
+
+Wait. Save `{ANTHROPIC_WIRED} = true`. If stuck, probe: "Did the search find Anthropic API?" / "Is the Save button active or grayed out?" (99% of failures = whitespace in the pasted key.)
 
 ---
 
@@ -252,11 +266,19 @@ Wait.
 > 4. You're redirected back to OAuth & Permissions. Find the **Bot User OAuth Token** field at the top.
 > 5. Click **Copy** next to it. The token starts with `xoxb-`
 >
-> ⚠️ **Send the token to Erica in Slack. Do NOT paste it here.**
+> Keep the token on your clipboard — it goes into your n8n, same drill as the Anthropic key.
 >
-> Tell me "sent."
+> **Click here:** {N8N_URL}/home/credentials
+>
+> 1. Click **+ Add credential**
+> 2. Search `Slack` and click **Slack API**
+> 3. In the **Access Token** field, paste your `xoxb-` token
+> 4. Rename the credential to `Slack`
+> 5. Click **Save**
+>
+> Tell me when it's green.
 
-Wait. Save `{SLACK_TOKEN_SENT} = true`.
+Wait. Save `{SLACK_WIRED} = true`.
 
 ### 3.4 Grab the signing secret
 
@@ -319,11 +341,19 @@ If they pick Notion:
 > 6. On the next page, find the **Internal Integration Secret** field
 > 7. Click **Show**, then copy. It starts with `secret_` or `ntn_`
 >
-> ⚠️ **Send to Erica in Slack. Do NOT paste it here.**
+> Keep it on your clipboard — into your n8n it goes.
 >
-> Tell me "sent."
+> **Click here:** {N8N_URL}/home/credentials
+>
+> 1. Click **+ Add credential**
+> 2. Search `Notion` and click **Notion API**
+> 3. In the **API Key** field, paste your secret
+> 4. Rename the credential to `Notion`
+> 5. Click **Save**
+>
+> Tell me when it's green.
 
-Wait. Save `{NOTION_SECRET_SENT} = true`.
+Wait. Save `{NOTION_WIRED} = true`.
 
 ### 4b. Google Sheets path
 
@@ -413,21 +443,22 @@ Wait. Capture answer. Save `{MEETING_API_KEY_SENT}` if applicable, otherwise not
 
 ## Phase 6: Confirm everything's been sent to Erica
 
-> Quick confirmation before we move on.
+> Quick confirmation before we move on. Two checklists.
 >
-> Erica should now have, in your Slack DM:
-> - n8n URL: `{N8N_URL}`
-> - n8n API key
-> - Anthropic API key
-> - Slack bot token (xoxb-)
+> **In YOUR n8n** ({N8N_URL}/home/credentials) you should see, each with a green dot:
+> - `Anthropic`
+> - `Slack`
+> {if notion}- `Notion`{/if}
+>
+> **Erica should have, in your Slack DM:**
+> - n8n URL (`{N8N_URL}`) + n8n API key
 > - Slack signing secret
-> - Slack channel ID: `{SLACK_CHANNEL_ID}`
-> - Slack app name: `{SLACK_APP_NAME}`
-> {if notion}- Notion integration secret{/if}
+> - Slack channel ID (`{SLACK_CHANNEL_ID}`) + app name (`{SLACK_APP_NAME}`)
 > {if sheets}- Google Sheet URL: `{SHEETS_URL}`{/if}
 > - {MEETING_TOOL} API key {if fathom}+ webhook secret{/if}
 >
-> If any are missing, send them now. Tell me when she's got the full set.
+> If anything is red or missing, tell me which and we will fix it. Otherwise say "all good" and we move on.
+
 
 Wait. Once confirmed:
 
@@ -711,7 +742,8 @@ After the orientation, write `context/client-brief.md`:
 - Database: {NOTION_OR_SHEETS} {if sheets}({SHEETS_URL}){/if}
 - Meeting tool: {MEETING_TOOL}
 - GitHub: {BRAIN_REPO}
-- All API keys sent to Erica via Slack ✓
+- Anthropic / Slack{if notion} / Notion{/if} credentials wired into client's n8n by client ✓
+- Sent to Erica via Slack: n8n URL + API key, Slack signing secret, {MEETING_TOOL} key ✓
 
 ## First build target
 See `context/first-build.md`.
@@ -723,7 +755,7 @@ None collected during onboarding (by design). Erica to push positioning, problem
 
 ## Duo action items
 
-- [ ] Wire all credentials into client's n8n
+- [ ] Verify client-wired n8n credentials (Anthropic / Slack / Notion — all green) + add meeting-tool credential
 - [ ] Push context docs (positioning, problem framing, voice) to `context/`
 - [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (Duo's bot token) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column)
 - [ ] Build first automation (see first-build.md)
@@ -743,7 +775,8 @@ git add context/client-brief.md && git commit -m "docs: add client brief" && git
 >
 > - **Brain:** live at `{BRAIN_REPO}` and cloned to your machine
 > - **Context docs** loaded — Claude knows your business ✓
-> - **All API keys** sent to Erica in Slack ✓
+> - **Anthropic, Slack, Notion** wired into your n8n by you ✓
+> - **n8n access + the rest** sent to Erica in Slack ✓
 > - **Cursor** connected and your brain is open
 >
 > **What happens next:**
