@@ -79,7 +79,7 @@ Wait. Save as `{MEETING_WEBHOOK_SECRET}`.
 
 Wait. Save as `{GITHUB_USERNAME}`.
 
-> What's the brain repo name? (default: `{CLIENT_FIRST_NAME}-brain`)
+> What's the brain repo name? (convention: `{company-slug}-brain`, e.g. `outpost-event-co-brain`; older clients may be `{firstname}-brain` or `{firstname}-coach`)
 
 Wait. Save as `{BRAIN_REPO}`.
 
