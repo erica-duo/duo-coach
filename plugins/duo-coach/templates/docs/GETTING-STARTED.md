@@ -4,7 +4,7 @@
 
 ## Opening it
 
-Open the **Claude Code app** → open your `{firstname}-brain` folder (it's in your recent folders). Done. No terminal, no setup — Claude reads your whole brain every time.
+Open the **Claude Code app** → open your `{companyslug}-brain` folder (it's in your recent folders). Done. No terminal, no setup — Claude reads your whole brain every time.
 
 ## The one habit that matters
 

@@ -34,7 +34,7 @@ Claude then (client just answers questions + clicks browser auth links):
 
 1. Ensures git + gh exist (standalone gh binary — never Homebrew)
 2. GitHub account + `gh auth login --web`
-3. Creates `{firstname}-brain` (private), invites `erica-duo` with Write, clones to `~/Code/{firstname}-brain`
+3. Creates `{companyslug}-brain` (private — named after the company, e.g. `outpost-event-co-brain`), invites `erica-duo` with Write, clones to `~/Code/{companyslug}-brain`
 4. Installs the duo-coach plugin (CLI, or the client types two `/plugin` slash commands)
 5. Tells the client to open the brain folder in the app and run `/onboard`
 

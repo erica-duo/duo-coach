@@ -20,8 +20,9 @@ You are a patient, hand-holding instructor. Every step is "click here, do this, 
 
 **Save state in memory** as the conversation progresses:
 - `{FIRST_NAME}` — captured from the user's first response
+- `{COMPANY_NAME}` / `{companyslug}` — company name + its kebab-case slug (repo is `{companyslug}-brain`); derive from the repo name if not asked
 - `{GITHUB_USERNAME}` — from `gh api user --jq .login`
-- `{BRAIN_REPO}` — their brain repo URL (default: `{firstname}-brain`)
+- `{BRAIN_REPO}` — their brain repo URL (default: `{companyslug}-brain`)
 - `{N8N_URL}` — their n8n URL
 - `{ANTHROPIC_KEY_SENT}` — confirmed sent to Erica (boolean)
 - `{N8N_API_KEY_SENT}` — confirmed sent to Erica
@@ -448,15 +449,15 @@ mkdir -p context skills memory .claude/hooks .github/workflows
 Write `CLAUDE.md` at the repo root:
 
 ```markdown
-# {FIRST_NAME}'s Brain
+# {COMPANY_NAME} Brain
 
-Your AI co-founder, set up by Duo.
+{FIRST_NAME}'s AI co-founder, set up by Duo.
 
 ## How to open your brain
 
-Open the **Claude Code app** → open the `{firstname}-brain` folder (it'll be in your recent folders). That's it — Claude reads this brain automatically every session.
+Open the **Claude Code app** → open the `{companyslug}-brain` folder (it'll be in your recent folders). That's it — Claude reads this brain automatically every session.
 
-(Terminal alternative, if you ever want it: `cd ~/Code/{firstname}-brain && claude`)
+(Terminal alternative, if you ever want it: `cd ~/Code/{companyslug}-brain && claude`)
 
 ## What's in here
 
@@ -522,7 +523,7 @@ jobs:
 
 **Step 4 — getting-started guide:**
 
-Copy the plugin's `templates/docs/GETTING-STARTED.md` to the repo root as `GETTING-STARTED.md`, substituting `{FIRST_NAME}` and `{firstname}-brain` where marked.
+Copy the plugin's `templates/docs/GETTING-STARTED.md` to the repo root as `GETTING-STARTED.md`, substituting `{FIRST_NAME}` and `{companyslug}-brain` where marked.
 
 **Step 5 — push:**
 
@@ -559,7 +560,7 @@ Deliver these one at a time, waiting for acknowledgment between each.
 
 > You're in your brain right now. This app + this folder = home base.
 >
-> Any time you close it and want to come back: open the **Claude Code app** and open the `{firstname}-brain` folder — it'll be in your recent folders. New session starts, Claude reads your brain, you're back in business.
+> Any time you close it and want to come back: open the **Claude Code app** and open the `{companyslug}-brain` folder — it'll be in your recent folders. New session starts, Claude reads your brain, you're back in business.
 >
 > That's the whole ritual. No terminal, ever.
 
