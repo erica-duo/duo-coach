@@ -28,7 +28,7 @@ cat <<'EOF'
   │     This script installs everything you  │
   │     need (Homebrew, Node, GitHub CLI,    │
   │     Claude Code) and creates your repo.  │
-  │     Then we move to /onboard for the     │
+  │     Then we move to /onboard-cursor for the     │
   │     rest of the setup.                   │
   │                                          │
   │     Total time: ~10 minutes.             │
@@ -223,13 +223,13 @@ Next:
      (First time only: it'll open a browser to authenticate. Click through it.)
 
   3. Run the onboarding flow:
-     ${BOLD}/onboard${RESET}
+     ${BOLD}/onboard-cursor${RESET}
 
-/onboard will walk you through the rest — n8n setup, all the credentials,
+/onboard-cursor will walk you through the rest — n8n setup, all the credentials,
 your meeting tool (Fathom/Granola/etc.), pasting in the docs Erica sent you,
 and a few questions about your business.
 
-${BOLD}Heads up:${RESET} when /onboard asks for an API key, send it to Erica in Slack.
+${BOLD}Heads up:${RESET} when /onboard-cursor asks for an API key, send it to Erica in Slack.
 ${BOLD}Do NOT paste keys into the terminal${RESET} — Claude Code will refuse them and
 you'll have to regenerate.
 

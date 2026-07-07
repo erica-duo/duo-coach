@@ -37,7 +37,7 @@ Write-Host @'
   |     This script installs everything you  |
   |     need (Git, Node, GitHub CLI,         |
   |     Claude Code) and creates your repo.  |
-  |     Then we move to /onboard for the     |
+  |     Then we move to /onboard-cursor for the     |
   |     rest of the setup.                   |
   |                                          |
   |     Total time: ~10 minutes.             |
@@ -212,13 +212,13 @@ Next:
      (First time only: it'll open a browser to authenticate. Click through it.)
 
   3. Run the onboarding flow:
-     /onboard
+     /onboard-cursor
 
-/onboard will walk you through the rest — n8n setup, all the credentials,
+/onboard-cursor will walk you through the rest — n8n setup, all the credentials,
 your meeting tool (Fathom/Granola/etc.), pasting in the docs Erica sent you,
 and a few questions about your business.
 
-Heads up: when /onboard asks for an API key, send it to Erica in Slack.
+Heads up: when /onboard-cursor asks for an API key, send it to Erica in Slack.
 Do NOT paste keys into the terminal — Claude Code will refuse them and
 you'll have to regenerate.
 
