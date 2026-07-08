@@ -127,9 +127,15 @@ Output this checklist with all values pre-filled. Erica works through it top to 
 
 ── GitHub secrets (2 min) ──────────────────────
 
+HARD RULE: never put Duo credentials (Claudius Slack token, Duo Anthropic /
+Fathom / Notion / n8n keys) in a client's repo, secrets, or infrastructure.
+Client repos only ever hold the client's own tokens.
+
 [ ] Go to: https://github.com/{GITHUB_USERNAME}/{BRAIN_REPO}/settings/secrets/actions
-    Add secret: SLACK_BOT_TOKEN  →  [paste Duo's bot token]
+    Add secret: SLACK_BOT_TOKEN  →  {SLACK_TOKEN}  (the client's own bot — never Duo's)
     Add secret: SLACK_CHANNEL_ID →  {DUO_CHANNEL_ID}
+[ ] In the #duo-{client} Slack Connect channel, invite the client's bot so it
+    can post there: /invite @{SLACK_APP_NAME}
 
 ── n8n credentials ─────────────────────────────
 

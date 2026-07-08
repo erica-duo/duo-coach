@@ -528,7 +528,7 @@ Wait.
 > - **skills/** — your slash commands. Each file in here is a workflow you trigger by typing `/skill-name`. Things like "prep me for this call" or "write my weekly recap."
 > - **memory/** — persistent notes across sessions. Claude writes here automatically so the next session picks up where you left off.
 > - **.claude/hooks** — background triggers. Run automatically when certain events happen. You won't touch these much — they're the self-updating glue.
-> - **.github/workflows/** — automation workflows. One of these pings Duo in Slack any time you push something, so we always know what you're building and can stay in sync.
+> - **.github/workflows/** — automation workflows. One of these has your Slack app ping Duo any time you push something, so we always know what you're building and can stay in sync.
 >
 > Everything lives in GitHub, which means Erica can see it, push to it, and stay in sync with you at all times.
 >
@@ -587,7 +587,9 @@ Say: `> Done.`
 
 **Step 3 — push notification workflow:**
 
-Say: `> Setting up the Slack notification — this pings Duo any time you push something...`
+Say: `> Setting up the Slack notification — your Slack app pings Duo any time you push something...`
+
+The workflow's secrets are the client's OWN bot token and channel — never Duo credentials. Duo tokens (Claudius, Duo Anthropic/Fathom/n8n keys) must never be stored in a client's repo or infrastructure.
 
 Create `.github/workflows/push-notify.yml` in the repo:
 
@@ -757,7 +759,7 @@ None collected during onboarding (by design). Erica to push positioning, problem
 
 - [ ] Verify client-wired n8n credentials (Anthropic / Slack / Notion — all green) + add meeting-tool credential
 - [ ] Push context docs (positioning, problem framing, voice) to `context/`
-- [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (Duo's bot token) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column)
+- [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (the CLIENT's own bot token — never Duo's/Claudius's) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column). Invite the client's bot to the #duo-{client} channel so it can post there.
 - [ ] Build first automation (see first-build.md)
 - [ ] Export workflow JSON to `n8n-workflows/`
 - [ ] Schedule build session

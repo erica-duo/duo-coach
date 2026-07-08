@@ -60,7 +60,7 @@ Output: `context/client-brief.md` + `context/first-build.md` + `GETTING-STARTED.
 
 1. Wire all credentials into the client's n8n
 2. Push context docs (positioning, problem framing, anchors, voiceprint) to `context/`
-3. Add the two GitHub secrets for push notifications (`SLACK_BOT_TOKEN`, `SLACK_CHANNEL_ID`)
+3. Add the two GitHub secrets for push notifications (`SLACK_BOT_TOKEN` = the client's own bot token — never a Duo credential, `SLACK_CHANNEL_ID` = the shared #duo-{client} channel; invite the client's bot to that channel)
 4. Build the first automation (see `context/first-build.md`)
 5. Run duo-brain's `/new-client-setup` to add them to all Duo systems
 

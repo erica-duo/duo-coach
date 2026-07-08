@@ -431,7 +431,7 @@ Wait. Once confirmed:
 > - **context/** — your business knowledge. Erica will push your positioning, problem framing, and voice docs here after this call — I read them automatically every session.
 > - **skills/** — your slash commands. Each file is a workflow you trigger by typing `/skill-name`.
 > - **memory/** — persistent notes across sessions, so the next session picks up where you left off.
-> - **.github/workflows/** — background automations. One pings Duo in Slack whenever anything is pushed here, so we stay in sync.
+> - **.github/workflows/** — background automations. One has your Slack app ping Duo whenever anything is pushed here, so we stay in sync.
 >
 > Building it now — this takes me about a minute.
 
@@ -482,6 +482,8 @@ Type `/handoff` before closing. Next time you open your brain, type `/handoff` a
 ```
 
 **Step 3 — push notification workflow:**
+
+The workflow's secrets are the client's OWN bot token and channel — never Duo credentials. Duo tokens (Claudius, Duo Anthropic/Fathom/n8n keys) must never be stored in a client's repo or infrastructure.
 
 Create `.github/workflows/push-notify.yml`:
 
@@ -639,7 +641,7 @@ Erica to push official docs (positioning, problem framing, anchors, voiceprint) 
 
 - [ ] Wire all credentials into client's n8n
 - [ ] Push context docs (positioning, problem framing, anchors, voiceprint) to `context/`
-- [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (Duo's bot token) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column)
+- [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (the CLIENT's own bot token — never Duo's/Claudius's) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column). Invite the client's bot to the #duo-{client} channel so it can post there.
 - [ ] Build first automation (see first-build.md)
 - [ ] Export workflow JSON to `n8n-workflows/`
 - [ ] Schedule build session
