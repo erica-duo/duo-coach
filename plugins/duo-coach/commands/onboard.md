@@ -612,7 +612,7 @@ Wait. Capture their answer and write it to `context/first-build.md` as a single 
 
 The one business doc the client adds themselves. Everything else Erica pushes after the call.
 
-> One more thing: your **Context Map**. That's the doc Duo built with you — your problem framing, audience profiles, and headline directions. Your brain should never write a word without it.
+> One more thing: your **Context Map**. That's the doc Duo built with you — your problem framing, audience profiles, and headline directions. Really helpful context for anything your brain writes or builds.
 >
 > Open your Context Map doc (it's a Google Doc from Erica — search your email or Drive for "Context Map"), select all, copy, and paste the whole thing right here in the chat.
 
