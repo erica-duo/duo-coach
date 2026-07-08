@@ -428,7 +428,7 @@ Wait. Once confirmed:
 > It's already created and connected to GitHub (we did that in setup). Now I'll put the structure in. A brain has five parts:
 >
 > - **CLAUDE.md** — the instructions file. Every session, I read this first. It's the operating manual.
-> - **context/** — your business knowledge. Erica will push your positioning, problem framing, and voice docs here after this call — I read them automatically every session.
+> - **context/** — your business knowledge. Erica will push your Context Map and voice docs here after this call — I read them automatically every session.
 > - **skills/** — your slash commands. Each file is a workflow you trigger by typing `/skill-name`.
 > - **memory/** — persistent notes across sessions, so the next session picks up where you left off.
 > - **.github/workflows/** — background automations. One has your Slack app ping Duo whenever anything is pushed here, so we stay in sync.
@@ -540,7 +540,7 @@ Wait.
 
 ### 7.1 Optional: seed some context now
 
-> Erica will push your official docs (positioning, problem framing, voice) into `context/` after this call — that's the real fuel.
+> Erica will push your official docs (Context Map, voice) into `context/` after this call — that's the real fuel.
 >
 > But if you have anything handy RIGHT NOW — a bio, an about page, a proposal you've sent, notes on how you talk about your business — paste it here and I'll file it. Totally optional.
 >
@@ -633,14 +633,14 @@ See `context/first-build.md`.
 
 ## Context docs
 {if seeded}Client seeded: {list the files}.{/if}
-Erica to push official docs (positioning, problem framing, anchors, voiceprint) to `context/`.
+Erica to push official docs (Context Map, voiceprint) to `context/`.
 
 ---
 
 ## Duo action items
 
 - [ ] Wire all credentials into client's n8n
-- [ ] Push context docs (positioning, problem framing, anchors, voiceprint) to `context/`
+- [ ] Push context docs (Context Map, voiceprint) to `context/`
 - [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (the CLIENT's own bot token — never Duo's/Claudius's) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column). Invite the client's bot to the #duo-{client} channel so it can post there.
 - [ ] Build first automation (see first-build.md)
 - [ ] Export workflow JSON to `n8n-workflows/`

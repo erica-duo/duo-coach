@@ -564,7 +564,7 @@ Open **Cursor** → open this folder (File → Open Folder, or recents) → open
 ## What's in here
 
 - **CLAUDE.md** (this file) — operating instructions. Claude reads this first, every session.
-- **context/** — your business docs. Positioning, offers, voice, client briefs. Erica pushes these.
+- **context/** — your business docs. Your Context Map lives here (added during onboarding); Erica pushes the rest — voice, offers, client briefs.
 - **skills/** — your slash commands. Each file = one workflow you can trigger with `/skill-name`.
 - **memory/** — persistent notes across sessions. Claude writes here automatically.
 - **.claude/hooks** — background automation triggers. Runs quietly when certain events happen.
@@ -646,9 +646,27 @@ Say: `> Done. Your brain is live.`
 
 Wait.
 
-### 7.4 (removed — no doc collection)
+### 7.4 Add your Context Map
 
-Do NOT ask for wireframes, positioning docs, voice docs, or any business context. Erica pushes all context docs to `context/` after the call. Onboarding is credentials + GitHub + orientation only.
+The one business doc the client adds themselves. Everything else Erica pushes after the call.
+
+> One more thing while we're in here: your **Context Map**. That's the doc Duo built with you — your problem framing, audience profiles, and headline directions. Your brain should never write a word without it.
+>
+> Open your Context Map doc (it's a Google Doc from Erica — search your email or Drive for "Context Map"), select all, copy, and paste the whole thing right here in the chat.
+
+Wait. Save what they paste verbatim to `context/context-map.md`, with this header above it:
+
+```markdown
+# Context Map — {FIRST_NAME}
+
+*Source: Duo Context Map doc. Pasted during onboarding on {date}. If Duo updates the Context Map, this file gets replaced.*
+```
+
+Commit and push: `git add context/context-map.md && git commit -m "docs: add Context Map" && git push`
+
+If they can't find the doc or don't have one yet, don't stall the call — say `> No problem, Erica will push it to your brain directly.` and flag it in the brief's Duo action items.
+
+Do NOT ask for wireframes, other positioning docs, voice docs, or any further business context. The Context Map is the only doc collected here — Erica pushes everything else to `context/` after the call.
 
 ### 7.5 Give Duo access
 
@@ -751,14 +769,14 @@ After the orientation, write `context/client-brief.md`:
 See `context/first-build.md`.
 
 ## Context docs
-None collected during onboarding (by design). Erica to push positioning, problem framing, and voice docs to `context/`.
+None collected during onboarding (by design). Erica to push the Context Map and voice docs to `context/`.
 
 ---
 
 ## Duo action items
 
 - [ ] Verify client-wired n8n credentials (Anthropic / Slack / Notion — all green) + add meeting-tool credential
-- [ ] Push context docs (positioning, problem framing, voice) to `context/`
+- [ ] Push context docs (Context Map, voice) to `context/`
 - [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (the CLIENT's own bot token — never Duo's/Claudius's) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column). Invite the client's bot to the #duo-{client} channel so it can post there.
 - [ ] Build first automation (see first-build.md)
 - [ ] Export workflow JSON to `n8n-workflows/`
