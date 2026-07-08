@@ -769,14 +769,16 @@ After the orientation, write `context/client-brief.md`:
 See `context/first-build.md`.
 
 ## Context docs
-None collected during onboarding (by design). Erica to push the Context Map and voice docs to `context/`.
+{if context map pasted}Context Map added by client during onboarding → `context/context-map.md`.{else}Context Map NOT collected — client couldn't find the doc. Erica to push it.{/if}
+Erica to push remaining docs (voiceprint, wireframe, engagement model) to `context/`.
 
 ---
 
 ## Duo action items
 
 - [ ] Verify client-wired n8n credentials (Anthropic / Slack / Notion — all green) + add meeting-tool credential
-- [ ] Push context docs (Context Map, voice) to `context/`
+- [ ] {if context map NOT pasted}Push Context Map to `context/context-map.md` — client couldn't find their copy{/if}
+- [ ] Push remaining context docs (voiceprint, wireframe, engagement model) to `context/`
 - [ ] Add two secrets to client's GitHub repo (activates push notifications): `SLACK_BOT_TOKEN` (the CLIENT's own bot token — never Duo's/Claudius's) + `SLACK_CHANNEL_ID` (client's Duo channel ID — look up in Client Registry → Slack Channel ID column). Invite the client's bot to the #duo-{client} channel so it can post there.
 - [ ] Build first automation (see first-build.md)
 - [ ] Export workflow JSON to `n8n-workflows/`
